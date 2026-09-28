@@ -1,0 +1,6 @@
+{
+  "name": "SOSSKA CRYPTO SCREENER V2",
+  "description": "Professional Crypto Trading Terminal & Screener V2 for algorithmic setup detection, multi-timeframe alignment, technical indicators, liquidity flow, risk management, and telegram alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
