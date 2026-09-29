@@ -1,6 +1,33 @@
-import React, { useState } from 'react';
-import { ArrowUpDown, ChevronRight, Eye, Filter, Info, RefreshCw, Search, Waves, Zap } from 'lucide-react';
-import { TradingSetup } from '../types/crypto.ts';
+import React, { useMemo, useState } from 'react';
+import {
+  ArrowUpDown,
+  Award,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Eye,
+  Filter,
+  Hourglass,
+  Info,
+  RefreshCw,
+  Scale,
+  Search,
+  Sparkles,
+  Target,
+  Timer,
+  Waves,
+  Zap,
+} from 'lucide-react';
+import { StrictEntryEvaluation, StrictFilterSettings, TradingSetup } from '../types/crypto.ts';
+import {
+  evaluateStrictEntry,
+  loadStrictFilterSettings,
+  saveStrictFilterSettings,
+} from '../utils/strictFilter.ts';
+import { estimateTradeDuration } from '../utils/durationEstimator.ts';
+import { StrictEntryFilterBar } from './StrictEntryFilterBar.tsx';
+import { StrictSettingsModal } from './StrictSettingsModal.tsx';
+import { TradeDurationModal } from './TradeDurationModal.tsx';
 
 interface CryptoTableProps {
   setups: TradingSetup[];
@@ -27,6 +54,32 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
   const [sortField, setSortField] = useState<SortField>('score');
   const [sortAsc, setSortAsc] = useState(false);
 
+  // Strict Entry Master Filter State
+  const [strictSettings, setStrictSettings] = useState<StrictFilterSettings>(() =>
+    loadStrictFilterSettings()
+  );
+  const [isStrictModalOpen, setIsStrictModalOpen] = useState(false);
+  const [isDurationModalOpen, setIsDurationModalOpen] = useState(false);
+
+  const handleUpdateStrictSettings = (newSettings: StrictFilterSettings) => {
+    setStrictSettings(newSettings);
+    saveStrictFilterSettings(newSettings);
+  };
+
+  // Evaluate strict entry for all setups
+  const strictEvaluations = useMemo(() => {
+    const map = new Map<string, StrictEntryEvaluation>();
+    for (const s of setups) {
+      map.set(s.symbol, evaluateStrictEntry(s, strictSettings));
+    }
+    return map;
+  }, [setups, strictSettings]);
+
+  // Setups that pass all strict rules
+  const qualifiedSetups = useMemo(() => {
+    return setups.filter(s => strictEvaluations.get(s.symbol)?.isQualified);
+  }, [setups, strictEvaluations]);
+
   const formatPrice = (p: number) => {
     if (p >= 1000) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     if (p >= 1) return p.toFixed(4);
@@ -43,10 +96,19 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
 
   // Filter items
   const filtered = setups.filter(s => {
+    // 1. Strict Master Filter (if enabled)
+    if (strictSettings.enabled) {
+      const evaluation = strictEvaluations.get(s.symbol);
+      if (!evaluation?.isQualified) return false;
+    }
+
+    // 2. Search query
     if (search) {
       const q = search.trim().toUpperCase();
       if (!s.symbol.includes(q)) return false;
     }
+
+    // 3. Sub-filters
     if (filter === 'long') return s.state === 'CONFIRMED_LONG';
     if (filter === 'short') return s.state === 'CONFIRMED_SHORT';
     if (filter === 'wait') return s.state === 'WAIT_FOR_CONFIRMATION';
@@ -102,7 +164,18 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-      {/* Controls Bar: Filters, Search, Counts */}
+      {/* 1. MASTER FILTER ABOVE: Strict Entry Rules & High-Profit Filter Bar */}
+      <StrictEntryFilterBar
+        settings={strictSettings}
+        onChangeSettings={handleUpdateStrictSettings}
+        onOpenSettingsModal={() => setIsStrictModalOpen(true)}
+        onOpenDurationModal={() => setIsDurationModalOpen(true)}
+        qualifiedSetups={qualifiedSetups}
+        totalSetupsCount={setups.length}
+        onSelectSetup={onSelectSetup}
+      />
+
+      {/* 2. Secondary Controls Bar: Filters, Search, Counts */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         {/* Filter Segmented Controls */}
         <div className="flex items-center gap-1.5 p-1 bg-neutral-900 border border-neutral-800 rounded-lg overflow-x-auto text-xs">
@@ -112,7 +185,7 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
               filter === 'all' ? 'bg-neutral-800 text-white' : 'text-neutral-400 hover:text-white'
             }`}
           >
-            All Pairs ({setups.length})
+            All Pairs ({strictSettings.enabled ? qualifiedSetups.length : setups.length})
           </button>
           <button
             onClick={() => setFilter('stock')}
@@ -136,7 +209,7 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
               filter === 'long' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800/80' : 'text-neutral-400 hover:text-white'
             }`}
           >
-            🟢 Long ({setups.filter(s => s.state === 'CONFIRMED_LONG').length})
+            🟢 Long ({filtered.filter(s => s.state === 'CONFIRMED_LONG').length})
           </button>
           <button
             onClick={() => setFilter('short')}
@@ -144,7 +217,7 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
               filter === 'short' ? 'bg-rose-950 text-rose-300 border border-rose-800/80' : 'text-neutral-400 hover:text-white'
             }`}
           >
-            🔴 Short ({setups.filter(s => s.state === 'CONFIRMED_SHORT').length})
+            🔴 Short ({filtered.filter(s => s.state === 'CONFIRMED_SHORT').length})
           </button>
           <button
             onClick={() => setFilter('wait')}
@@ -152,7 +225,7 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
               filter === 'wait' ? 'bg-amber-950 text-amber-300 border border-amber-800/80' : 'text-neutral-400 hover:text-white'
             }`}
           >
-            🟡 Waiting ({setups.filter(s => s.state === 'WAIT_FOR_CONFIRMATION').length})
+            🟡 Waiting ({filtered.filter(s => s.state === 'WAIT_FOR_CONFIRMATION').length})
           </button>
           <button
             onClick={() => setFilter('whale')}
@@ -160,12 +233,22 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
               filter === 'whale' ? 'bg-indigo-950 text-indigo-300 border border-indigo-800/80' : 'text-neutral-400 hover:text-white'
             }`}
           >
-            🐳 Whale Flow ({setups.filter(s => s.setupType === 'Whale Resilience' || s.indicators.mfi > 60).length})
+            🐳 Whale Flow
           </button>
         </div>
 
-        {/* Search, Refresh & Sort Trigger */}
+        {/* Search, Refresh, Duration Modal Trigger */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Direct Duration Table Button */}
+          <button
+            onClick={() => setIsDurationModalOpen(true)}
+            title="فتح جدول مواعيد انتهاء الصفقات وساعات الوصول للأهداف"
+            className="px-3 py-1.5 bg-gradient-to-r from-amber-950/80 to-amber-900/60 hover:from-amber-900/90 hover:to-amber-800/80 border border-amber-700/80 rounded-lg text-xs font-mono text-amber-300 font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-sm shadow-amber-950/40"
+          >
+            <Hourglass className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+            <span>⏱️ جدول مدد الصفقات</span>
+          </button>
+
           {onOpenStockTokensModal && (
             <button
               onClick={onOpenStockTokensModal}
@@ -233,6 +316,20 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
                 <th className="py-2.5 px-3 font-semibold">Symbol</th>
                 <th className="py-2.5 px-3 font-semibold">Price</th>
                 <th className="py-2.5 px-3 font-semibold">24H %</th>
+                {strictSettings.enabled && (
+                  <th className="py-2.5 px-3 font-semibold text-emerald-400 bg-emerald-950/40 border-x border-emerald-800/60 whitespace-nowrap">
+                    <div className="flex items-center gap-1.5">
+                      <Target className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>🎯 شروط الدخول الصارم والأرباح</span>
+                    </div>
+                  </th>
+                )}
+                <th className="py-2.5 px-3 font-semibold text-amber-300 bg-amber-950/30 border-x border-amber-800/60 whitespace-nowrap">
+                  <div className="flex items-center gap-1.5">
+                    <Hourglass className="w-3.5 h-3.5 text-amber-400" />
+                    <span>⏳ مدة الصفقة للهدف والانتهاء</span>
+                  </div>
+                </th>
                 <th className="py-2.5 px-3 font-semibold">Volume</th>
                 <th className="py-2.5 px-3 font-semibold">Trend</th>
                 <th className="py-2.5 px-3 font-semibold">EMA 9</th>
@@ -260,8 +357,36 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
             <tbody className="divide-y divide-neutral-900 font-mono text-neutral-300 text-xs">
               {sorted.length === 0 ? (
                 <tr>
-                  <td colSpan={17} className="py-12 text-center text-neutral-500 font-sans">
-                    No cryptocurrency pairs matched your search or filter criteria.
+                  <td colSpan={strictSettings.enabled ? 19 : 18} className="py-12 text-center">
+                    {strictSettings.enabled ? (
+                      <div className="max-w-md mx-auto space-y-3 font-sans">
+                        <div className="p-3 bg-emerald-950/40 border border-emerald-800/80 rounded-2xl w-fit mx-auto text-emerald-400">
+                          <Target className="w-8 h-8" />
+                        </div>
+                        <h4 className="text-sm font-bold text-white">لا توجد عملات تطابق معايير الصرامة القصوى حالياً</h4>
+                        <p className="text-xs text-neutral-400 leading-relaxed">
+                          هذا الفلتر الصارم يحمي رأس مالك من الدخول أثناء التذبذب غير الواضح. يمكنك تخفيف الشروط قليلاً أو اختيار قالب &quot;النخبة الصارم&quot; لعرض أقرب الصفقات المؤهلة.
+                        </p>
+                        <div className="flex items-center justify-center gap-2 pt-1 font-mono">
+                          <button
+                            onClick={() => handleUpdateStrictSettings({ ...strictSettings, preset: 'elite', minScore: 70, minTp1ProfitPercent: 1.2 })}
+                            className="px-3 py-1.5 bg-emerald-900/60 hover:bg-emerald-800 border border-emerald-700 rounded-lg text-emerald-300 text-xs font-semibold cursor-pointer"
+                          >
+                            تخفيف المعايير إلى (سكور 70+ | ربح 1.2%+)
+                          </button>
+                          <button
+                            onClick={() => setIsStrictModalOpen(true)}
+                            className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-lg text-neutral-300 text-xs font-semibold cursor-pointer"
+                          >
+                            ⚙️ فتح الإعدادات
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-neutral-500 font-sans">
+                        No cryptocurrency pairs matched your search or filter criteria.
+                      </span>
+                    )}
                   </td>
                 </tr>
               ) : (
@@ -353,6 +478,91 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
                           {setup.change24h >= 0 ? '+' : ''}{setup.change24h.toFixed(2)}%
                         </span>
                       </td>
+
+                      {/* Strict Entry Targets & Profit Cell (When enabled) */}
+                      {strictSettings.enabled && (() => {
+                        const evalData = strictEvaluations.get(setup.symbol);
+                        return (
+                          <td className="py-2 px-3 whitespace-nowrap bg-emerald-950/20 border-x border-emerald-900/40">
+                            <div className="flex flex-col gap-0.5">
+                              <div className="flex items-center gap-1.5">
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-700/80">
+                                  {evalData?.strictGrade === 'AAA_ELITE'
+                                    ? '⭐ AAA ELITE'
+                                    : evalData?.strictGrade === 'AA_STRONG'
+                                    ? '⚡ AA STRONG'
+                                    : '✅ A STRICT'}
+                                </span>
+                                <span className="font-bold text-cyan-300 text-[11px] font-mono">
+                                  {evalData?.realizedRR.toFixed(1)}:1 R:R
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[10px] font-mono">
+                                <span className="text-emerald-400 font-bold" title="ربح الهدف الأول">
+                                  TP1: +{evalData?.tp1GainPercent.toFixed(1)}%
+                                </span>
+                                <span className="text-neutral-500">|</span>
+                                <span className="text-teal-300 font-bold" title="ربح الهدف الثاني">
+                                  TP2: +{evalData?.tp2GainPercent.toFixed(1)}%
+                                </span>
+                                <span className="text-neutral-500">|</span>
+                                <span className="text-rose-400" title="وقف الخسارة">
+                                  SL: -{evalData?.slRiskPercent.toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2 text-[9px] text-neutral-400 pt-0.5">
+                                <span className="text-amber-300 font-semibold" title="نسبة الارتفاع خلال 24 ساعة الماضية مقارنة بالحد الأقصى 5%">
+                                  🚀 ارتفاع: {setup.change24h >= 0 ? '+' : ''}{setup.change24h.toFixed(1)}% (≤ {strictSettings.max24hChangePercent}%)
+                                </span>
+                                <span className="text-neutral-500">•</span>
+                                <span className="text-cyan-300 font-semibold" title="حجم سيولة التداول خلال 24 ساعة">
+                                  💧 سيولة: ${(setup.quoteVolume24h / 1_000_000).toFixed(1)}M
+                                </span>
+                              </div>
+                              <div className="text-[10px]">
+                                {evalData?.entryStatus === 'PERFECT_ZONE' && (
+                                  <span className="text-emerald-400 font-medium">🎯 داخل نطاق الدخول المثالي</span>
+                                )}
+                                {evalData?.entryStatus === 'PULLBACK_RETEST' && (
+                                  <span className="text-cyan-400 font-medium">🔄 إعادة اختبار (Pullback)</span>
+                                )}
+                                {evalData?.entryStatus === 'MOMENTUM_BREAKOUT' && (
+                                  <span className="text-purple-400 font-medium">⚡ مومنتوم اختراق صاعد</span>
+                                )}
+                                {evalData?.entryStatus === 'OUTSIDE_ZONE' && (
+                                  <span className="text-amber-400 font-medium">⚠️ مراقبة قرب النطاق</span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                        );
+                      })()}
+
+                      {/* Estimated Duration Cell (تقريباً كام ساعة للهدف والانتهاء) */}
+                      {(() => {
+                        const duration = estimateTradeDuration(setup);
+                        return (
+                          <td className="py-2 px-3 whitespace-nowrap bg-amber-950/15 border-x border-amber-900/40">
+                            <div className="flex flex-col gap-0.5 font-mono text-[10px]">
+                              <div className="flex items-center gap-1 text-emerald-400 font-bold">
+                                <span>🎯 هدف 1:</span>
+                                <span className="text-white">~{duration.tp1Text}</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-teal-300 font-bold">
+                                <span>🏁 انتهاء:</span>
+                                <span className="text-white">~{duration.tp2Text}</span>
+                              </div>
+                              <div className="mt-0.5">
+                                <span
+                                  className={`inline-block px-1.5 py-0.2 rounded border text-[9px] font-bold ${duration.speedBadgeColor}`}
+                                >
+                                  {duration.speedCategoryArabic}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                        );
+                      })()}
 
                       {/* Volume */}
                       <td className="py-2.5 px-3 whitespace-nowrap text-neutral-400">
@@ -490,6 +700,24 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
           </table>
         </div>
       </div>
+
+      {/* Strict Entry Settings Configuration Modal */}
+      <StrictSettingsModal
+        isOpen={isStrictModalOpen}
+        onClose={() => setIsStrictModalOpen(false)}
+        settings={strictSettings}
+        onSave={handleUpdateStrictSettings}
+        qualifiedCount={qualifiedSetups.length}
+        totalCount={setups.length}
+      />
+
+      {/* Trade Duration & ETA Table Modal */}
+      <TradeDurationModal
+        isOpen={isDurationModalOpen}
+        onClose={() => setIsDurationModalOpen(false)}
+        setups={setups}
+        onSelectSetup={onSelectSetup}
+      />
     </div>
   );
 };

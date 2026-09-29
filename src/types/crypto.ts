@@ -267,3 +267,35 @@ export interface TelegramTestResult {
   message: string;
   messageId?: number;
 }
+
+export interface StrictFilterSettings {
+  enabled: boolean;
+  preset: 'elite' | 'sniper' | 'explosive' | 'custom';
+  minScore: number;
+  minRiskReward: number;
+  minTp1ProfitPercent: number;
+  minTp2ProfitPercent: number;
+  maxSlRiskPercent: number;
+  max24hChangePercent: number; // Max pump ceiling e.g. 5% to avoid buying the top
+  min24hVolumeUsd: number; // Minimum 24h trading volume in USD e.g. 10M
+  requireConfirmedState: boolean;
+  requireInsideEntryZone: boolean;
+  requirePositiveFlow: boolean;
+  direction: 'ALL' | 'LONG_ONLY' | 'SHORT_ONLY';
+}
+
+export interface StrictEntryEvaluation {
+  isQualified: boolean;
+  tp1GainPercent: number;
+  tp2GainPercent: number;
+  slRiskPercent: number;
+  realizedRR: number;
+  current24hChange: number;
+  volumeUsd: number;
+  isWithinPumpLimit: boolean;
+  hasSufficientLiquidity: boolean;
+  entryStatus: 'PERFECT_ZONE' | 'PULLBACK_RETEST' | 'MOMENTUM_BREAKOUT' | 'SLIGHT_CHASE' | 'OUTSIDE_ZONE';
+  strictGrade: 'AAA_ELITE' | 'AA_STRONG' | 'A_STANDARD';
+  reasons: string[];
+}
+
