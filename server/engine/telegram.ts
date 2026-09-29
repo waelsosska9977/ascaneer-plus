@@ -1,5 +1,4 @@
 import { ScreenerSettings, TradingSetup } from '../../src/types/crypto.ts';
-import { estimateTradeDuration } from '../../src/utils/durationEstimator.ts';
 import { getSignalsHistory } from '../storage/store.ts';
 
 // Track sent alerts to prevent duplicate spam (symbol -> lastAlertState)
@@ -28,11 +27,6 @@ export function formatTelegramSignalMessage(setup: TradingSetup): string {
     ? `\n💡 *نصيحة الدخول الرابح:*\n${setup.executionTip}\n`
     : '';
 
-  // Calculate estimated trade duration & ETA
-  const duration = estimateTradeDuration(setup);
-  const tp1Pct = duration.targetGainTP1Percent;
-  const tp2Pct = duration.targetGainTP2Percent;
-
   return `🚨 *SOSSKA EARLY SIGNAL ALERT* ⚡
 
 ${typeEmoji} *Setup:* ${setup.setupType}
@@ -44,15 +38,10 @@ ${stateEmoji}
 ${entryZoneText}
 
 🎯 *الأهداف ووقف الخسارة المحسوبة:*
-🎯 *الهدف الأول (TP1):* $${setup.tp1} (+${tp1Pct}%) (تأمين 50% ونقل الوقف لنقطة الدخول)
-🎯 *الهدف الثاني (TP2):* $${setup.tp2} (+${tp2Pct}%) (تفريغ باقي العقد)
+🎯 *الهدف الأول (TP1):* $${setup.tp1} (تأمين 50% ونقل الوقف لنقطة الدخول)
+🎯 *الهدف الثاني (TP2):* $${setup.tp2}
 🛑 *وقف الخسارة (SL):* $${setup.sl} (مخاطرة محكمة تحت الدعم)
 ⚖️ *نسبة العائد للمخاطرة (R:R):* 1:${setup.riskRewardRatio}
-
-⏳ *مدة الصفقة التقريبية للانتهاء (Trade ETA):*
-• 🎯 الوصول للهدف الأول (TP1): ~${duration.tp1Text} (+${tp1Pct}%)
-• 🏁 انتهاء الصفقة بالكامل (TP2): ~${duration.tp2Text} (+${tp2Pct}%)
-• ⏱️ نوع وسرعة الصفقة: ${duration.speedCategoryArabic}
 
 📈 *مؤشرات فريم 15 دقيقة (Fast Execution):*
 • EMA 9: $${setup.indicators.ema9.toFixed(4)} | EMA 21: $${setup.indicators.ema21.toFixed(4)}
@@ -205,28 +194,25 @@ _Market analysis tool. Not financial advice._`;
   if (cleanCmd.startsWith('/top')) {
     const top = [...setups].sort((a, b) => b.score - a.score).slice(0, 5);
     if (top.length === 0) return 'No active setups currently scanned.';
-    return `🔥 *Top Setups by Score:*\n\n` + top.map((s, i) => {
-      const dur = estimateTradeDuration(s);
-      return `${i + 1}. *${s.symbol}* - Score: *${s.score}/100* (${s.state.replace('_', ' ')})\n   Entry: $${s.entry} | TP1: $${s.tp1} | TP2: $${s.tp2}\n   ⏳ المدة المتوقعة: ~${dur.tp1Text} (هدف 1) • ~${dur.tp2Text} (انتهاء) • ${dur.speedCategoryArabic}`;
-    }).join('\n\n');
+    return `🔥 *Top Setups by Score:*\n\n` + top.map((s, i) =>
+      `${i + 1}. *${s.symbol}* - Score: *${s.score}/100* (${s.state.replace('_', ' ')})\n   Entry: $${s.entry} | TP1: $${s.tp1} | SL: $${s.sl}`
+    ).join('\n\n');
   }
 
   if (cleanCmd.startsWith('/long')) {
     const longs = setups.filter(s => s.state === 'CONFIRMED_LONG');
     if (longs.length === 0) return '🟡 No CONFIRMED LONG setups at this exact moment. Market is currently evaluating confirmations.';
-    return `🟢 *Confirmed Long Setups:*\n\n` + longs.map(s => {
-      const dur = estimateTradeDuration(s);
-      return `• *${s.symbol}* | Score: *${s.score}/100*\n  Entry: $${s.entry} | TP1: $${s.tp1} | TP2: $${s.tp2}\n  ⏳ المدة: ~${dur.tp1Text} (هدف 1) • ~${dur.tp2Text} (انتهاء) | ${dur.speedCategoryArabic}\n  MTF: ${s.mtf.alignmentFraction} | Type: ${s.setupType}`;
-    }).join('\n\n');
+    return `🟢 *Confirmed Long Setups:*\n\n` + longs.map(s =>
+      `• *${s.symbol}* | Score: *${s.score}/100*\n  Entry: $${s.entry} | TP1: $${s.tp1} | SL: $${s.sl}\n  MTF: ${s.mtf.alignmentFraction} | Type: ${s.setupType}`
+    ).join('\n\n');
   }
 
   if (cleanCmd.startsWith('/short')) {
     const shorts = setups.filter(s => s.state === 'CONFIRMED_SHORT');
     if (shorts.length === 0) return '🔴 No CONFIRMED SHORT setups at this exact moment.';
-    return `🔴 *Confirmed Short Setups:*\n\n` + shorts.map(s => {
-      const dur = estimateTradeDuration(s);
-      return `• *${s.symbol}* | Score: *${s.score}/100*\n  Entry: $${s.entry} | TP1: $${s.tp1} | TP2: $${s.tp2}\n  ⏳ المدة: ~${dur.tp1Text} (هدف 1) • ~${dur.tp2Text} (انتهاء) | ${dur.speedCategoryArabic}\n  MTF: ${s.mtf.alignmentFraction}`;
-    }).join('\n\n');
+    return `🔴 *Confirmed Short Setups:*\n\n` + shorts.map(s =>
+      `• *${s.symbol}* | Score: *${s.score}/100*\n  Entry: $${s.entry} | TP1: $${s.tp1} | SL: $${s.sl}\n  MTF: ${s.mtf.alignmentFraction}`
+    ).join('\n\n');
   }
 
   if (cleanCmd.startsWith('/scan') || cleanCmd.startsWith('/status')) {

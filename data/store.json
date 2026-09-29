@@ -84,13 +84,13 @@
       "score": 87,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 120.95,
-      "pnlPercent": 0.14,
-      "maxRunUpPercent": 0.1407517800960438,
+      "currentPrice": 120.62,
+      "pnlPercent": -0.13,
+      "maxRunUpPercent": 0.033118065904944566,
       "maxDrawdownPercent": 0.2649445272396153,
       "trajectory": "TESTING_ENTRY",
-      "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.14%",
+      "entryAccuracy": "EXTENDED_ENTRY",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.13%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($120.0026) holding above EMA21 ($119.5612)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -116,13 +116,13 @@
       "score": 82,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 0.782,
-      "pnlPercent": -0.13,
+      "currentPrice": 0.781,
+      "pnlPercent": -0.26,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 0.5108556832694768,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.13%",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.26%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($0.785209) holding above EMA21 ($0.782472)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -147,13 +147,13 @@
       "score": 85,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 1.548,
-      "pnlPercent": 0.21,
+      "currentPrice": 1.5533,
+      "pnlPercent": 0.56,
       "maxRunUpPercent": 0.6797436395416556,
       "maxDrawdownPercent": 0.0388424936880905,
       "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.21%",
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.56%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($1.5189) holding above EMA21 ($1.5105)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -180,13 +180,13 @@
       "score": 87,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 0.005752,
-      "pnlPercent": 0.23,
+      "currentPrice": 0.005759,
+      "pnlPercent": 0.35,
       "maxRunUpPercent": 0.906081198815124,
       "maxDrawdownPercent": 0.38334204565255825,
       "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.23%",
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.35%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($0.005402) holding above EMA21 ($0.005207)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -245,13 +245,13 @@
       "score": 80,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 0.3502,
-      "pnlPercent": 3.27,
-      "maxRunUpPercent": 4.276024771453852,
+      "currentPrice": 0.3526,
+      "pnlPercent": 3.98,
+      "maxRunUpPercent": 4.069595989383656,
       "maxDrawdownPercent": 1.209082866411086,
       "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +4.28% دون ارتداد مؤثر (تراجع 1.21% فقط)",
+      "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +4.07% دون ارتداد مؤثر (تراجع 1.21% فقط)",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($0.321075) holding above EMA21 ($0.310453)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -276,13 +276,13 @@
       "score": 78,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 314.1,
-      "pnlPercent": 0.03,
+      "currentPrice": 313.9,
+      "pnlPercent": -0.03,
       "maxRunUpPercent": 0.2547770700636979,
       "maxDrawdownPercent": 0.38216560509553776,
       "trajectory": "TESTING_ENTRY",
-      "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.03%",
+      "entryAccuracy": "EXTENDED_ENTRY",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.03%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($314.7387) holding above EMA21 ($312.7774)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -343,7 +343,7 @@
       "currentPrice": 0.01386,
       "pnlPercent": -0.43,
       "maxRunUpPercent": 0.3591954022988484,
-      "maxDrawdownPercent": 0.5747126436781624,
+      "maxDrawdownPercent": 0.5028735632183953,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
       "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.43%",
@@ -371,13 +371,13 @@
       "score": 89,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 1.209,
-      "pnlPercent": -0.82,
+      "currentPrice": 1.211,
+      "pnlPercent": -0.66,
       "maxRunUpPercent": 0.4101722723543801,
-      "maxDrawdownPercent": 0.8203445447087784,
+      "maxDrawdownPercent": 0.6562756357670227,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.82% نحو وقف الخسارة",
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.66% نحو وقف الخسارة",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($1.2127) holding above EMA21 ($1.2016)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -404,13 +404,13 @@
       "score": 85,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 0.010001,
-      "pnlPercent": -0.12,
+      "currentPrice": 0.009978,
+      "pnlPercent": -0.35,
       "maxRunUpPercent": 0.33955857385400023,
       "maxDrawdownPercent": 0.9787276540497267,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.12%",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.35%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($0.009743) holding above EMA21 ($0.009622)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -994,13 +994,13 @@
       "score": 78,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 0.231,
-      "pnlPercent": -0.65,
+      "currentPrice": 0.2314,
+      "pnlPercent": -0.47,
       "maxRunUpPercent": 1.4193548387096764,
       "maxDrawdownPercent": 0.774193548387107,
-      "trajectory": "REVERSAL_AGAINST",
+      "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.65% نحو وقف الخسارة",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.47%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($0.229578) holding above EMA21 ($0.227713)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -1123,13 +1123,13 @@
       "score": 78,
       "timeframe": "15M",
       "status": "Active",
-      "currentPrice": 7.704,
-      "pnlPercent": -0.12,
+      "currentPrice": 7.685,
+      "pnlPercent": -0.36,
       "maxRunUpPercent": 0.5315700764942237,
       "maxDrawdownPercent": 0.8686632957344764,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.12%",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.36%",
       "reasons": [
         "🚀 Early momentum: 15M EMA9 ($7.6068) holding above EMA21 ($7.5290)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
@@ -1156,13 +1156,13 @@
         "Volume surge (+84.3% vs 20-period average) signalling early capital entry",
         "High taker buy flow with strong institutional liquidity resilience"
       ],
-      "currentPrice": 1.0762,
+      "currentPrice": 1.0758,
       "maxRunUpPercent": 0.9539686950078702,
       "maxDrawdownPercent": 0.6205427433546494,
-      "pnlPercent": -0.32,
+      "pnlPercent": -0.36,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.32%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.36%"
     },
     {
       "id": "sig_injusdt_1790671610838",
@@ -1287,13 +1287,13 @@
         "🚀 Early momentum: 15M EMA9 ($146.6875) holding above EMA21 ($146.4282)",
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)"
       ],
-      "currentPrice": 146.96,
+      "currentPrice": 146.97,
       "maxRunUpPercent": 0.2315287708546159,
       "maxDrawdownPercent": 0.19748042219951795,
-      "pnlPercent": 0.07,
+      "pnlPercent": 0.08,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.07%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.08%"
     },
     {
       "id": "sig_xplusdt_1790671610334",
@@ -1313,13 +1313,13 @@
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
         "Healthy RSI momentum (61.5) with substantial headroom before overbought levels"
       ],
-      "currentPrice": 0.10006,
+      "currentPrice": 0.10009,
       "maxRunUpPercent": 1.8774212774411472,
       "maxDrawdownPercent": 0.9734776994139216,
-      "pnlPercent": -0.61,
-      "trajectory": "REVERSAL_AGAINST",
+      "pnlPercent": -0.58,
+      "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.61% نحو وقف الخسارة"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.58%"
     },
     {
       "id": "sig_trxusdt_1790671610087",
@@ -1339,13 +1339,13 @@
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
         "Healthy RSI momentum (59.7) with substantial headroom before overbought levels"
       ],
-      "currentPrice": 0.3351,
+      "currentPrice": 0.3352,
       "maxRunUpPercent": 0.1787842669845022,
-      "maxDrawdownPercent": 0.1787842669845022,
-      "pnlPercent": -0.15,
+      "maxDrawdownPercent": 0.119189511323007,
+      "pnlPercent": -0.12,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.15%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.12%"
     },
     {
       "id": "sig_fetusdt_1790671610081",
@@ -1393,10 +1393,10 @@
         "Price consolidating above intraday Volume Weighted Average Price (VWAP)",
         "Healthy RSI momentum (56.4) with substantial headroom before overbought levels"
       ],
-      "currentPrice": 0.00000434,
+      "currentPrice": 0.00000432,
       "maxRunUpPercent": 2.3529411764705856,
       "maxDrawdownPercent": 0,
-      "pnlPercent": 2.12,
+      "pnlPercent": 1.65,
       "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "PERFECT_TIMING",
       "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +2.35% دون ارتداد مؤثر (تراجع 0.00% فقط)"
@@ -1476,13 +1476,13 @@
         "Trading above daily Volume Weighted Average Price (VWAP)",
         "Constructive RSI momentum (52.0) in sustained accumulation zone"
       ],
-      "currentPrice": 0.11439,
+      "currentPrice": 0.11427,
       "maxRunUpPercent": 2.4467448028060583,
       "maxDrawdownPercent": 2.729061510822139,
-      "pnlPercent": -2.14,
+      "pnlPercent": -2.24,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -2.14% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -2.24% نحو وقف الخسارة"
     },
     {
       "id": "sig_arbusdt_1790671486407",
@@ -1534,10 +1534,10 @@
         "Bearish RSI distribution (49.2)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 1.554,
+      "currentPrice": 1.558,
       "maxRunUpPercent": 2.2026431718061623,
       "maxDrawdownPercent": 0,
-      "pnlPercent": 2.2,
+      "pnlPercent": 1.95,
       "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "PERFECT_TIMING",
       "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +2.20% دون ارتداد مؤثر (تراجع 0.00% فقط)"
@@ -1561,13 +1561,13 @@
         "Price distributed below VWAP benchmark",
         "Bearish RSI distribution (49.9)"
       ],
-      "currentPrice": 88.13,
-      "maxRunUpPercent": 0.543355218474082,
+      "currentPrice": 88.35,
+      "maxRunUpPercent": 0.1358388046185245,
       "maxDrawdownPercent": 0.792393026941366,
-      "pnlPercent": 0.24,
-      "trajectory": "CORRECT_DIRECTION",
-      "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.24%"
+      "pnlPercent": -0.01,
+      "trajectory": "TESTING_ENTRY",
+      "entryAccuracy": "EXTENDED_ENTRY",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.01%"
     },
     {
       "id": "sig_vthousdt_1790671234175",
@@ -1589,13 +1589,13 @@
         "Bearish RSI distribution (36.5)",
         "Elevated seller participation on downward expansion"
       ],
-      "currentPrice": 0.000696,
+      "currentPrice": 0.000698,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 2.0319303338171126,
-      "pnlPercent": -1.02,
+      "pnlPercent": -1.31,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.02% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.31% نحو وقف الخسارة"
     },
     {
       "id": "sig_virtualusdt_1790671234034",
@@ -1618,13 +1618,13 @@
         "Positive relative Money Flow Index (55.1)",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 0.8185,
+      "currentPrice": 0.8182,
       "maxRunUpPercent": 1.141053653799475,
       "maxDrawdownPercent": 1.201747997086674,
-      "pnlPercent": -0.64,
+      "pnlPercent": -0.68,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.64% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.68% نحو وقف الخسارة"
     },
     {
       "id": "sig_mstrbusdt_1790671234024",
@@ -1647,13 +1647,13 @@
         "Positive relative Money Flow Index (65.1)",
         "Multi-timeframe synchronization (3/4 TFs aligned bullish)"
       ],
-      "currentPrice": 161.09,
+      "currentPrice": 161.03,
       "maxRunUpPercent": 1.4044767697034175,
       "maxDrawdownPercent": 0.16301962505487447,
-      "pnlPercent": 1,
+      "pnlPercent": 0.97,
       "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +1.00%"
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.97%"
     },
     {
       "id": "sig_crvusdt_1790671233913",
@@ -1675,13 +1675,13 @@
         "Positive relative Money Flow Index (84.6)",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 0.3969,
+      "currentPrice": 0.3939,
       "maxRunUpPercent": 0.7530120481927718,
       "maxDrawdownPercent": 2.1084337349397497,
-      "pnlPercent": -0.38,
-      "trajectory": "TESTING_ENTRY",
+      "pnlPercent": -1.13,
+      "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.38%"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.13% نحو وقف الخسارة"
     },
     {
       "id": "sig_asterusdt_1790671233360",
@@ -1704,13 +1704,13 @@
         "Positive relative Money Flow Index (54.9)",
         "Multi-timeframe synchronization (3/4 TFs aligned bullish)"
       ],
-      "currentPrice": 0.7257,
+      "currentPrice": 0.7262,
       "maxRunUpPercent": 1.6645859342488571,
       "maxDrawdownPercent": 0.0416146483562168,
-      "pnlPercent": 0.67,
+      "pnlPercent": 0.74,
       "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "PERFECT_TIMING",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.67%"
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.74%"
     },
     {
       "id": "sig_0gusdt_1790671233204",
@@ -1761,13 +1761,13 @@
         "Price distributed below VWAP benchmark",
         "Bearish RSI distribution (48.8)"
       ],
-      "currentPrice": 312.5,
+      "currentPrice": 312.4,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 0.9327758121582612,
-      "pnlPercent": -0.51,
+      "pnlPercent": -0.48,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.51%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.48%"
     },
     {
       "id": "sig_eurusdt_1790671233198",
@@ -1790,13 +1790,13 @@
         "Net capital outflow indicated by MFI (25.1)",
         "Multi-timeframe synchronization (4/4 TFs aligned bearish)"
       ],
-      "currentPrice": 1.1349,
+      "currentPrice": 1.1351,
       "maxRunUpPercent": 0.11454753722795655,
       "maxDrawdownPercent": 0.09692483919286975,
-      "pnlPercent": 0,
+      "pnlPercent": -0.02,
       "trajectory": "TESTING_ENTRY",
-      "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.00%"
+      "entryAccuracy": "EXTENDED_ENTRY",
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.02%"
     },
     {
       "id": "sig_paxgusdt_1790671233195",
@@ -1818,13 +1818,13 @@
         "Bearish RSI distribution (45.2)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 4163.34,
+      "currentPrice": 4161.4,
       "maxRunUpPercent": 0.039014991871874065,
       "maxDrawdownPercent": 0.39665241736408585,
-      "pnlPercent": -0.27,
+      "pnlPercent": -0.22,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.27%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.22%"
     },
     {
       "id": "sig_seiusdt_1790671232956",
@@ -1846,13 +1846,13 @@
         "Bearish RSI distribution (42.9)",
         "Net capital outflow indicated by MFI (46.8)"
       ],
-      "currentPrice": 0.07457,
+      "currentPrice": 0.07466,
       "maxRunUpPercent": 0.5878423513694,
       "maxDrawdownPercent": 1.643286573146286,
-      "pnlPercent": 0.37,
+      "pnlPercent": 0.25,
       "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.37%"
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.25%"
     },
     {
       "id": "sig_牛来usdt_1790671232954",
@@ -1873,13 +1873,13 @@
         "Trading above daily Volume Weighted Average Price (VWAP)",
         "Constructive RSI momentum (51.5) in sustained accumulation zone"
       ],
-      "currentPrice": 0.10794,
+      "currentPrice": 0.10824,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 4.267045959640868,
-      "pnlPercent": -4.04,
+      "pnlPercent": -3.78,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -4.04% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -3.78% نحو وقف الخسارة"
     },
     {
       "id": "sig_trumpusdt_1790671232952",
@@ -1900,13 +1900,13 @@
         "Price distributed below VWAP benchmark",
         "Net capital outflow indicated by MFI (42.1)"
       ],
-      "currentPrice": 2.056,
+      "currentPrice": 2.05,
       "maxRunUpPercent": 0,
-      "maxDrawdownPercent": 2.4813895781637627,
-      "pnlPercent": -2.03,
+      "maxDrawdownPercent": 1.985111662531019,
+      "pnlPercent": -1.74,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -2.03% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.74% نحو وقف الخسارة"
     },
     {
       "id": "sig_icpusdt_1790671232947",
@@ -1928,13 +1928,13 @@
         "Positive relative Money Flow Index (89.9)",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 3.329,
+      "currentPrice": 3.323,
       "maxRunUpPercent": 0.7413997627520733,
       "maxDrawdownPercent": 2.3131672597864728,
-      "pnlPercent": -1.28,
+      "pnlPercent": -1.45,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.28% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.45% نحو وقف الخسارة"
     },
     {
       "id": "sig_mubarakusdt_1790671232711",
@@ -2014,13 +2014,13 @@
         "Constructive RSI momentum (55.2) in sustained accumulation zone",
         "Positive relative Money Flow Index (65.3)"
       ],
-      "currentPrice": 12.61,
+      "currentPrice": 12.52,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 5.108359133126936,
-      "pnlPercent": -2.4,
+      "pnlPercent": -3.1,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -2.40% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -3.10% نحو وقف الخسارة"
     },
     {
       "id": "sig_crclbusdt_1790671232465",
@@ -2041,13 +2041,13 @@
         "Price distributed below VWAP benchmark",
         "Net capital outflow indicated by MFI (43.0)"
       ],
-      "currentPrice": 87.5,
+      "currentPrice": 87.46,
       "maxRunUpPercent": 0.1271529302970748,
       "maxDrawdownPercent": 1.2830886602704883,
-      "pnlPercent": -1.14,
+      "pnlPercent": -1.1,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.14% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.10% نحو وقف الخسارة"
     },
     {
       "id": "sig_dashusdt_1790671232460",
@@ -2099,10 +2099,10 @@
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)",
         "High taker buy pressure with positive liquidity resilience"
       ],
-      "currentPrice": 174,
+      "currentPrice": 172.83,
       "maxRunUpPercent": 5.158371040723988,
       "maxDrawdownPercent": 0,
-      "pnlPercent": 4.98,
+      "pnlPercent": 4.27,
       "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "PERFECT_TIMING",
       "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +5.16% دون ارتداد مؤثر (تراجع 0.00% فقط)"
@@ -2126,13 +2126,13 @@
         "Price distributed below VWAP benchmark",
         "Bearish RSI distribution (43.7)"
       ],
-      "currentPrice": 68.71,
+      "currentPrice": 68.63,
       "maxRunUpPercent": 0.43636363636363223,
       "maxDrawdownPercent": 0.7709090909090925,
-      "pnlPercent": 0.06,
+      "pnlPercent": 0.17,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.06%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.17%"
     },
     {
       "id": "sig_algousdt_1790671232215",
@@ -2181,13 +2181,13 @@
         "Bearish RSI distribution (38.6)",
         "Net capital outflow indicated by MFI (33.9)"
       ],
-      "currentPrice": 1443.25,
+      "currentPrice": 1444.32,
       "maxRunUpPercent": 0.3443018051251847,
       "maxDrawdownPercent": 2.4726490861948904,
-      "pnlPercent": -1.41,
+      "pnlPercent": -1.49,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.41% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.49% نحو وقف الخسارة"
     },
     {
       "id": "sig_uniusdt_1790670230363",
@@ -2208,13 +2208,13 @@
         "Price distributed below VWAP benchmark",
         "Net capital outflow indicated by MFI (46.3)"
       ],
-      "currentPrice": 9.088,
+      "currentPrice": 9.059,
       "maxRunUpPercent": 2.064319860930044,
       "maxDrawdownPercent": 0.3694046066927305,
-      "pnlPercent": 1.26,
-      "trajectory": "CORRECT_DIRECTION",
+      "pnlPercent": 1.58,
+      "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "PERFECT_TIMING",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +1.26%"
+      "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +2.06% دون ارتداد مؤثر (تراجع 0.37% فقط)"
     },
     {
       "id": "sig_adausdt_1790670170879",
@@ -2237,13 +2237,13 @@
         "Positive relative Money Flow Index (60.1)",
         "Multi-timeframe synchronization (3/4 TFs aligned bullish)"
       ],
-      "currentPrice": 0.2527,
+      "currentPrice": 0.2526,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 1.021611001964633,
-      "pnlPercent": -0.71,
+      "pnlPercent": -0.75,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.71% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.75% نحو وقف الخسارة"
     },
     {
       "id": "sig_xlmusdt_1790670050147",
@@ -2265,13 +2265,13 @@
         "Constructive RSI momentum (61.9) in sustained accumulation zone",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 0.2321,
+      "currentPrice": 0.2331,
       "maxRunUpPercent": 2.0249892287807025,
       "maxDrawdownPercent": 0.6893580353295952,
-      "pnlPercent": 0,
-      "trajectory": "TESTING_ENTRY",
+      "pnlPercent": 0.43,
+      "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.00%"
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.43%"
     },
     {
       "id": "sig_avaxusdt_1790669990393",
@@ -2293,10 +2293,10 @@
         "Positive relative Money Flow Index (78.5)",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 11.727,
+      "currentPrice": 11.675,
       "maxRunUpPercent": 5.317188733877335,
       "maxDrawdownPercent": 0.017548477669568026,
-      "pnlPercent": 2.9,
+      "pnlPercent": 2.44,
       "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "PERFECT_TIMING",
       "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +5.32% دون ارتداد مؤثر (تراجع 0.02% فقط)"
@@ -2321,13 +2321,13 @@
         "Constructive RSI momentum (59.6) in sustained accumulation zone",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 15.29,
+      "currentPrice": 15.271,
       "maxRunUpPercent": 1.4559286463798617,
       "maxDrawdownPercent": 0.01311647429170312,
-      "pnlPercent": 0.28,
-      "trajectory": "CORRECT_DIRECTION",
+      "pnlPercent": 0.15,
+      "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.28%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.15%"
     },
     {
       "id": "sig_ethusdt_1790669809643",
@@ -2350,13 +2350,13 @@
         "Positive relative Money Flow Index (67.5)",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 2738.48,
+      "currentPrice": 2735.73,
       "maxRunUpPercent": 0.9029743740578678,
       "maxDrawdownPercent": 0.4257509467259799,
-      "pnlPercent": 0.68,
+      "pnlPercent": 0.58,
       "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.68%"
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.58%"
     },
     {
       "id": "sig_rlusdusdt_1790669751366",
@@ -2378,13 +2378,13 @@
         "Constructive RSI momentum (56.4) in sustained accumulation zone",
         "Multi-timeframe synchronization (3/4 TFs aligned bullish)"
       ],
-      "currentPrice": 1.0003,
+      "currentPrice": 1.0002,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 0.029985007496248575,
-      "pnlPercent": -0.02,
+      "pnlPercent": -0.03,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.02%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.03%"
     },
     {
       "id": "sig_babyusdt_1790669750682",
@@ -2436,13 +2436,13 @@
         "Net capital outflow indicated by MFI (41.9)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 0.99981,
+      "currentPrice": 0.99982,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 0.021006932287659277,
-      "pnlPercent": -0.01,
+      "pnlPercent": -0.02,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.01%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.02%"
     },
     {
       "id": "sig_qntusdt_1790611755797",
@@ -2463,10 +2463,10 @@
         "Trading above daily Volume Weighted Average Price (VWAP)",
         "Constructive RSI momentum (50.5) in sustained accumulation zone"
       ],
-      "currentPrice": 253.15,
+      "currentPrice": 251.29,
       "maxRunUpPercent": 14.06311207834603,
       "maxDrawdownPercent": 0,
-      "pnlPercent": 10.18,
+      "pnlPercent": 9.38,
       "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "PERFECT_TIMING",
       "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +14.06% دون ارتداد مؤثر (تراجع 0.00% فقط)"
@@ -2523,13 +2523,13 @@
         "Net capital outflow indicated by MFI (22.1)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 1.176,
+      "currentPrice": 1.1757,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 3.403255287666456,
-      "pnlPercent": -2.36,
+      "pnlPercent": -2.33,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -2.36% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -2.33% نحو وقف الخسارة"
     },
     {
       "id": "sig_solusdt_1790611576016",
@@ -2657,13 +2657,13 @@
         "Constructive RSI momentum (56.5) in sustained accumulation zone",
         "Positive relative Money Flow Index (73.2)"
       ],
-      "currentPrice": 0.1454,
+      "currentPrice": 0.1464,
       "maxRunUpPercent": 7.152682255845937,
       "maxDrawdownPercent": 0.2063273727647832,
-      "pnlPercent": 0,
-      "trajectory": "TESTING_ENTRY",
+      "pnlPercent": 0.69,
+      "trajectory": "CORRECT_DIRECTION",
       "entryAccuracy": "PERFECT_TIMING",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.00%"
+      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.69%"
     },
     {
       "id": "sig_avaxusdt_1790611517059",
@@ -2711,13 +2711,13 @@
         "Net capital outflow indicated by MFI (23.6)",
         "Multi-timeframe synchronization (4/4 TFs aligned bearish)"
       ],
-      "currentPrice": 4156.99,
+      "currentPrice": 4156.03,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 0.8470490178737791,
-      "pnlPercent": -0.72,
+      "pnlPercent": -0.7,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.72% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -0.70% نحو وقف الخسارة"
     },
     {
       "id": "sig_enausdt_1790611516826",
@@ -2740,13 +2740,13 @@
         "Net capital outflow indicated by MFI (29.6)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 0.2549,
+      "currentPrice": 0.254,
       "maxRunUpPercent": 2.901353965183755,
       "maxDrawdownPercent": 0,
-      "pnlPercent": 1.39,
-      "trajectory": "CORRECT_DIRECTION",
+      "pnlPercent": 1.74,
+      "trajectory": "STRONG_CONTINUATION",
       "entryAccuracy": "PERFECT_TIMING",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +1.39%"
+      "continuationNotes": "🟢 استمرار ممتاز في الاتجاه الصحيح: حققت ذروة +2.90% دون ارتداد مؤثر (تراجع 0.00% فقط)"
     },
     {
       "id": "sig_linkusdt_1790611516825",
@@ -2794,13 +2794,13 @@
         "Net capital outflow indicated by MFI (23.9)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 0.5007,
+      "currentPrice": 0.5009,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 4.736408566721598,
-      "pnlPercent": -3.11,
+      "pnlPercent": -3.15,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -3.11% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -3.15% نحو وقف الخسارة"
     },
     {
       "id": "sig_bnbusdt_1790611516594",
@@ -2823,13 +2823,13 @@
         "Net capital outflow indicated by MFI (36.0)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 765.76,
+      "currentPrice": 765.22,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 0.6478518596233612,
-      "pnlPercent": -0.42,
+      "pnlPercent": -0.35,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.42%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.35%"
     },
     {
       "id": "sig_ondousdt_1790611516591",
@@ -2852,13 +2852,13 @@
         "Net capital outflow indicated by MFI (29.0)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 0.5176,
+      "currentPrice": 0.519,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 2.8325844891580303,
-      "pnlPercent": -1.11,
+      "pnlPercent": -1.39,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.11% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.39% نحو وقف الخسارة"
     },
     {
       "id": "sig_dogeusdt_1790611516590",
@@ -2954,13 +2954,13 @@
         "Net capital outflow indicated by MFI (39.8)",
         "Multi-timeframe synchronization (3/4 TFs aligned bearish)"
       ],
-      "currentPrice": 4.849,
+      "currentPrice": 4.856,
       "maxRunUpPercent": 1.7269736842105188,
       "maxDrawdownPercent": 1.3363486842105345,
-      "pnlPercent": 0.31,
-      "trajectory": "CORRECT_DIRECTION",
+      "pnlPercent": 0.16,
+      "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "SOUND_ENTRY",
-      "continuationNotes": "✅ تسير في الاتجاه الإيجابي بنسبة ربح +0.31%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة +0.16%"
     },
     {
       "id": "sig_xrpusdt_1790611516123",
@@ -3037,13 +3037,13 @@
         "Bearish RSI distribution (44.5)",
         "Net capital outflow indicated by MFI (45.6)"
       ],
-      "currentPrice": 84354.01,
+      "currentPrice": 84312.01,
       "maxRunUpPercent": 0,
       "maxDrawdownPercent": 1.4210252284830296,
-      "pnlPercent": -1.27,
+      "pnlPercent": -1.22,
       "trajectory": "REVERSAL_AGAINST",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.27% نحو وقف الخسارة"
+      "continuationNotes": "🔴 ارتداد عكس اتجاه التوصية بنسبة تراجع -1.22% نحو وقف الخسارة"
     },
     {
       "id": "sig_ethusdt_1790611515869",
@@ -3089,13 +3089,13 @@
         "Positive relative Money Flow Index (60.2)",
         "Multi-timeframe synchronization (4/4 TFs aligned bullish)"
       ],
-      "currentPrice": 1.00026,
+      "currentPrice": 1.00028,
       "maxRunUpPercent": 0.0069976907620499735,
-      "maxDrawdownPercent": 0.0069976907620499735,
-      "pnlPercent": -0.01,
+      "maxDrawdownPercent": 0.00599802065317935,
+      "pnlPercent": 0,
       "trajectory": "TESTING_ENTRY",
       "entryAccuracy": "EXTENDED_ENTRY",
-      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.01%"
+      "continuationNotes": "🟡 السعر يتذبذب في منطقة الدخول بنسبة -0.00%"
     },
     {
       "id": "sig_btc_01",
