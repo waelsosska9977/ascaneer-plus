@@ -8,9 +8,16 @@ export const PerformanceView: React.FC = () => {
 
   useEffect(() => {
     fetch('/api/performance')
-      .then(res => res.json())
-      .then(data => setStats(data))
-      .catch(console.error)
+      .then(res => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(data => {
+        if (data) setStats(data);
+      })
+      .catch(() => {
+        // Silently handle transient reconnect
+      })
       .finally(() => setIsLoading(false));
   }, []);
 

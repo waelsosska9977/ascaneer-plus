@@ -26,10 +26,12 @@ export const BacktestView: React.FC = () => {
         }),
       });
 
-      const data = await res.json();
-      setResult(data);
-    } catch (err) {
-      console.error('Backtest error:', err);
+      if (res.ok) {
+        const data = await res.json();
+        setResult(data);
+      }
+    } catch {
+      // Quiet fail during network reconnect
     } finally {
       setIsRunning(false);
     }

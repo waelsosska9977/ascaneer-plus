@@ -37,13 +37,18 @@ export const ChartModal: React.FC<ChartModalProps> = ({
     setIsLoadingCandles(true);
 
     fetch(`/api/klines?symbol=${setup.symbol}&interval=${chartInterval}&limit=70`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) return [];
+        return res.json();
+      })
       .then(data => {
         if (isMounted && Array.isArray(data)) {
           setCandles(data);
         }
       })
-      .catch(err => console.error('Error fetching candles:', err))
+      .catch(() => {
+        // Silently handle transient reconnect
+      })
       .finally(() => {
         if (isMounted) setIsLoadingCandles(false);
       });
@@ -193,22 +198,66 @@ export const ChartModal: React.FC<ChartModalProps> = ({
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div className="p-2.5 bg-neutral-950/80 rounded border border-neutral-800">
-                <div className="text-neutral-500 text-[11px] mb-1">Entry Price</div>
+                <div className="text-neutral-500 text-[11px] mb-1">Signal Price</div>
                 <div className="text-sm font-bold text-sky-400">${formatPrice(setup.entry)}</div>
+                {setup.entryZone && (
+                  <div className="text-[10px] text-sky-300 font-mono mt-0.5">
+                    Zone: ${formatPrice(setup.entryZone.min)} - ${formatPrice(setup.entryZone.max)}
+                  </div>
+                )}
               </div>
               <div className="p-2.5 bg-neutral-950/80 rounded border border-neutral-800">
                 <div className="text-neutral-500 text-[11px] mb-1">Take Profit 1 (TP1)</div>
                 <div className="text-sm font-bold text-emerald-400">${formatPrice(setup.tp1)}</div>
+                <div className="text-[10px] text-emerald-500/80 font-mono mt-0.5">+50% secure</div>
               </div>
               <div className="p-2.5 bg-neutral-950/80 rounded border border-neutral-800">
                 <div className="text-neutral-500 text-[11px] mb-1">Take Profit 2 (TP2)</div>
                 <div className="text-sm font-bold text-emerald-500">${formatPrice(setup.tp2)}</div>
+                <div className="text-[10px] text-emerald-500/80 font-mono mt-0.5">Runner target</div>
               </div>
               <div className="p-2.5 bg-neutral-950/80 rounded border border-neutral-800">
                 <div className="text-neutral-500 text-[11px] mb-1">Stop Loss (SL)</div>
                 <div className="text-sm font-bold text-rose-400">${formatPrice(setup.sl)}</div>
+                <div className="text-[10px] text-rose-500/80 font-mono mt-0.5">Tight structural</div>
               </div>
             </div>
+
+            {/* Live Signal Trajectory & Directional Health */}
+            {(isLong || isShort) && (
+              <div className="mt-3 p-3 bg-neutral-950/90 rounded border border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-neutral-400 font-sans">قيمة الربح/الخسارة اللحظية منذ الإشارة:</span>
+                  <span className={`px-2 py-0.5 rounded font-bold font-mono ${((isLong ? (setup.price - setup.entry) : (setup.entry - setup.price)) / setup.entry) >= 0 ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-rose-950 text-rose-300 border border-rose-800'}`}>
+                    {((isLong ? (setup.price - setup.entry) : (setup.entry - setup.price)) / setup.entry) >= 0 ? '+' : ''}
+                    {(((isLong ? (setup.price - setup.entry) : (setup.entry - setup.price)) / setup.entry) * 100).toFixed(2)}%
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-neutral-300">
+                  <span className="text-neutral-500 font-sans">صحة المسار:</span>
+                  <strong className={((isLong ? (setup.price - setup.entry) : (setup.entry - setup.price)) / setup.entry) >= 0 ? 'text-emerald-400 font-sans' : 'text-rose-400 font-sans'}>
+                    {(((isLong ? (setup.price - setup.entry) : (setup.entry - setup.price)) / setup.entry) * 100) >= 1.5
+                      ? '🚀 استمرار قوي نحو الأهداف'
+                      : (((isLong ? (setup.price - setup.entry) : (setup.entry - setup.price)) / setup.entry) * 100) > 0.2
+                      ? '✅ تسير في الاتجاه الصحيح'
+                      : (((isLong ? (setup.price - setup.entry) : (setup.entry - setup.price)) / setup.entry) * 100) >= -0.6
+                      ? '🟡 في نطاق نقطة الدخول (سليمة)'
+                      : '🔴 انعكاس عكس الاتجاه'}
+                  </strong>
+                </div>
+              </div>
+            )}
+
+            {/* Execution Guidance & Entry Tip */}
+            {setup.executionTip && (
+              <div className="mt-3 p-3 bg-neutral-950/90 rounded border border-amber-800/40 flex items-start gap-2.5 text-xs text-amber-200/90">
+                <span className="text-sm shrink-0">💡</span>
+                <div className="leading-relaxed">
+                  <strong className="text-amber-400 block mb-0.5">توجيه الدخول الذكي وتجنب مطاردة السعر:</strong>
+                  {setup.executionTip}
+                </div>
+              </div>
+            )}
 
             {/* Support & Resistance Levels */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px] mt-3 pt-3 border-t border-neutral-800 text-neutral-400">

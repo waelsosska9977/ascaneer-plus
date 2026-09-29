@@ -78,6 +78,25 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
             <div>
               <label className="block text-neutral-400 mb-1 font-mono text-[11px]">
+                Number of Coins to Scan (عدد العملات المفحوصة):
+              </label>
+              <select
+                value={formData.maxCoinsScanned || 60}
+                onChange={e => setFormData({ ...formData, maxCoinsScanned: parseInt(e.target.value, 10) })}
+                className="w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-white font-mono focus:outline-none focus:border-emerald-500"
+              >
+                <option value={30}>Top 30 High Volume Pairs</option>
+                <option value={60}>Top 60 Liquid Pairs (Recommended)</option>
+                <option value={100}>Top 100 Market Pairs</option>
+                <option value={150}>Top 150 Extended Pairs</option>
+              </select>
+              <span className="text-[10px] text-neutral-500 mt-1 block">
+                يحدد العدد الأقصى للعملات التي يفحصها الماسح تلقائياً حسب حجم التداول.
+              </span>
+            </div>
+
+            <div>
+              <label className="block text-neutral-400 mb-1 font-mono text-[11px]">
                 Minimum 24h Volume (USD):
               </label>
               <input
@@ -213,6 +232,98 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <span className="text-[10px] text-neutral-500 font-sans">High taker buy aggression tags</span>
               </div>
             </label>
+          </div>
+        </div>
+
+        {/* 4. Pre-Market P-Tokens Manager */}
+        <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-5 space-y-4">
+          <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+              4. Binance Pre-Market & P-Tokens Watchlist (توكنات ما قبل التداول وعقود P)
+            </h3>
+            <span className="text-[10px] text-cyan-400 font-mono">
+              {(formData.stockTokens || []).length} توكن مسجل
+            </span>
+          </div>
+
+          <p className="text-xs text-neutral-400 font-sans">
+            الرموز المسجلة هنا (مثل SNDKP، SNDKUSDTP، NSDKUSDTP، SPXUSDTP، SCRUSDTP وغيرها) يتم فحصها بشكل دائم في كل دورة مسح مع استخراج مناطق الدخول الدقيقة ووقف الخسارة وأهداف الربح وتنبيهات التيليجرام.
+          </p>
+
+          {/* Active tokens chips */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            {(formData.stockTokens || []).map(sym => (
+              <span
+                key={sym}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-neutral-900 border border-neutral-700/80 rounded-lg text-xs font-mono font-bold text-white shadow-sm"
+              >
+                <span className="text-cyan-400">⚡</span>
+                <span>{sym}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = (formData.stockTokens || []).filter(s => s !== sym);
+                    setFormData({ ...formData, stockTokens: next });
+                  }}
+                  className="text-neutral-500 hover:text-rose-400 ml-1 text-sm font-bold cursor-pointer"
+                  title="حذف"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+
+          {/* Quick preset actions */}
+          <div className="flex flex-wrap items-center gap-2 pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                const defaults = [
+                  'SNDKP',
+                  'SNDKUSDTP',
+                  'NSDKUSDTP',
+                  'NSDKP',
+                  'SPXUSDTP',
+                  'PENGUUSDTP',
+                  'MOVEUSDTP',
+                  'THEUSDTP',
+                  'SCRUSDTP',
+                  'EIGENUSDTP',
+                  'HMSTRUSDTP',
+                  'CATIUSDTP',
+                  'ACTUSDTP',
+                  'PNUTUSDTP',
+                ];
+                const merged = Array.from(new Set([...defaults, ...(formData.stockTokens || [])]));
+                setFormData({ ...formData, stockTokens: merged });
+              }}
+              className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-cyan-800/60 rounded-lg text-xs font-mono text-cyan-300 font-semibold cursor-pointer"
+            >
+              + إضافة حزمة توكنات P وما قبل التداول (SNDKP, NSDK, SPX...)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const newCoins = [
+                  'PENGUUSDT',
+                  'MOVEUSDT',
+                  'THEUSDT',
+                  'ACXUSDT',
+                  'ORCAUSDT',
+                  'PNUTUSDT',
+                  'ACTUSDT',
+                  'MEUSDT',
+                  'VIRTUALUSDT',
+                ];
+                const merged = Array.from(new Set([...newCoins, ...(formData.stockTokens || [])]));
+                setFormData({ ...formData, stockTokens: merged });
+              }}
+              className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-purple-800/60 rounded-lg text-xs font-mono text-purple-300 font-semibold cursor-pointer"
+            >
+              + إضافة توكنات بينانس الجديدة
+            </button>
           </div>
         </div>
 

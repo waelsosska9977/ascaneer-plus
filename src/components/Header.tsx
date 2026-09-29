@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calculator, RefreshCw, Send } from 'lucide-react';
+import { Calculator, RefreshCw, Send, TrendingUp } from 'lucide-react';
 import { MarketOverview } from '../types/crypto.ts';
 
 interface HeaderProps {
@@ -10,6 +10,7 @@ interface HeaderProps {
   isRefreshing: boolean;
   onOpenRiskCalc: () => void;
   onOpenTelegramModal: () => void;
+  onOpenStockTokensModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -20,6 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
   isRefreshing,
   onOpenRiskCalc,
   onOpenTelegramModal,
+  onOpenStockTokensModal,
 }) => {
   const statusColor = marketOverview?.dataProviderStatus === 'LIVE'
     ? 'bg-emerald-500'
@@ -104,6 +106,18 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Zone 3: Primary Actions */}
         <div className="flex items-center gap-2 shrink-0">
           <button
+            onClick={onOpenStockTokensModal}
+            title="إدارة وفحص توكنات ما قبل التداول وعقود P (مثل SNDKP و NSDKUSDTP)"
+            className="px-2.5 py-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/70 border border-cyan-800/80 rounded-md hover:bg-cyan-900/80 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-cyan-950/50"
+          >
+            <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="hidden sm:inline">توكنات P / Pre-Market</span>
+            <span className="text-[10px] bg-cyan-900/90 text-cyan-200 px-1.5 py-0.5 rounded font-mono font-bold">
+              P-TOKEN
+            </span>
+          </button>
+
+          <button
             onClick={onOpenTelegramModal}
             title="Telegram Bot Integration & Commands"
             className="px-2.5 py-1.5 text-xs font-medium text-neutral-300 bg-neutral-900 border border-neutral-800 rounded-md hover:border-neutral-700 hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
@@ -124,10 +138,11 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="px-3 py-1.5 text-xs font-medium text-white bg-emerald-700 rounded-md hover:bg-emerald-600 transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+            title="تحديث يدوي وفحص فوري للعملات الآن"
+            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition-all shadow-md shadow-emerald-950/40 rounded-md flex items-center gap-1.5 disabled:opacity-50 cursor-pointer border border-emerald-500/40"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span className="hidden xs:inline">{isRefreshing ? 'Scanning...' : 'Scan Now'}</span>
+            <span>{isRefreshing ? 'جاري الفحص...' : 'تحديث يدوي ⚡'}</span>
           </button>
         </div>
       </div>

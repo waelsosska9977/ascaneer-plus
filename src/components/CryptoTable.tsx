@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
-import { ArrowUpDown, ChevronRight, Eye, Filter, Info, Search, Waves } from 'lucide-react';
+import { ArrowUpDown, ChevronRight, Eye, Filter, Info, RefreshCw, Search, Waves, Zap } from 'lucide-react';
 import { TradingSetup } from '../types/crypto.ts';
 
 interface CryptoTableProps {
   setups: TradingSetup[];
   onSelectSetup: (setup: TradingSetup) => void;
   onOpenScoreModal: (setup: TradingSetup) => void;
+  onOpenStockTokensModal?: () => void;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
-type FilterType = 'all' | 'long' | 'short' | 'wait' | 'whale';
+type FilterType = 'all' | 'long' | 'short' | 'wait' | 'whale' | 'stock' | 'new';
 type SortField = 'score' | 'volume' | 'change' | 'rsi' | 'volChange' | 'mtf';
 
 export const CryptoTable: React.FC<CryptoTableProps> = ({
   setups,
   onSelectSetup,
   onOpenScoreModal,
+  onOpenStockTokensModal,
+  onRefresh,
+  isRefreshing = false,
 }) => {
   const [filter, setFilter] = useState<FilterType>('all');
   const [search, setSearch] = useState('');
@@ -45,6 +51,18 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
     if (filter === 'short') return s.state === 'CONFIRMED_SHORT';
     if (filter === 'wait') return s.state === 'WAIT_FOR_CONFIRMATION';
     if (filter === 'whale') return s.setupType === 'Whale Resilience' || s.indicators.mfi > 60;
+    if (filter === 'stock') {
+      return (
+        s.isPToken ||
+        s.category === 'PREMARKET_P' ||
+        s.symbol.endsWith('USDTP') ||
+        s.symbol.endsWith('P') ||
+        s.symbol.includes('SNDK') ||
+        s.symbol.includes('NSDK') ||
+        s.symbol.includes('SPX')
+      );
+    }
+    if (filter === 'new') return s.category === 'NEW_LISTING';
     return true;
   });
 
@@ -69,6 +87,19 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
     }
   };
 
+  const stockCount = setups.filter(
+    s =>
+      s.isPToken ||
+      s.category === 'PREMARKET_P' ||
+      s.symbol.endsWith('USDTP') ||
+      s.symbol.endsWith('P') ||
+      s.symbol.includes('SNDK') ||
+      s.symbol.includes('NSDK') ||
+      s.symbol.includes('SPX')
+  ).length;
+
+  const newListingCount = setups.filter(s => s.category === 'NEW_LISTING').length;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
       {/* Controls Bar: Filters, Search, Counts */}
@@ -82,6 +113,22 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
             }`}
           >
             All Pairs ({setups.length})
+          </button>
+          <button
+            onClick={() => setFilter('stock')}
+            className={`px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer whitespace-nowrap ${
+              filter === 'stock' ? 'bg-cyan-950 text-cyan-300 border border-cyan-800/80 font-bold' : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            ⚡ توكنات P & Pre-Market ({stockCount})
+          </button>
+          <button
+            onClick={() => setFilter('new')}
+            className={`px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer whitespace-nowrap ${
+              filter === 'new' ? 'bg-purple-950 text-purple-300 border border-purple-800/80 font-bold' : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            🆕 إدراجات جديدة ({newListingCount})
           </button>
           <button
             onClick={() => setFilter('long')}
@@ -117,8 +164,31 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
           </button>
         </div>
 
-        {/* Search & Sort Trigger */}
-        <div className="flex items-center gap-3">
+        {/* Search, Refresh & Sort Trigger */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {onOpenStockTokensModal && (
+            <button
+              onClick={onOpenStockTokensModal}
+              title="إدارة وفحص توكنات ما قبل التداول وعقود P (مثل SNDKP و NSDKUSDTP)"
+              className="px-3 py-1.5 bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-800/80 rounded-lg text-xs font-mono text-cyan-300 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <Zap className="w-3.5 h-3.5 text-cyan-400" />
+              <span>توكنات P / Pre-Market ⚡</span>
+            </button>
+          )}
+
+          {onRefresh && (
+            <button
+              onClick={onRefresh}
+              disabled={isRefreshing}
+              title="تحديث يدوي وفحص فوري للجدول الآن"
+              className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-lg text-xs font-mono text-emerald-400 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 whitespace-nowrap"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span>{isRefreshing ? 'جاري الفحص...' : 'تحديث يدوي ⚡'}</span>
+            </button>
+          )}
+
           <div className="relative flex-1 sm:w-56">
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
             <input
@@ -249,6 +319,16 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
                       <td className="py-2.5 px-3 whitespace-nowrap">
                         <div className="flex items-center gap-1.5 font-bold text-white group-hover:text-emerald-400 transition-colors">
                           <span>{setup.symbol}</span>
+                          {(setup.isPToken || setup.category === 'PREMARKET_P' || setup.symbol.endsWith('USDTP') || setup.symbol.endsWith('P') || setup.symbol.includes('SNDK') || setup.symbol.includes('NSDK')) && (
+                            <span className="px-1.5 py-0.5 bg-cyan-950/90 text-cyan-300 border border-cyan-800/80 rounded text-[9px] font-mono tracking-tight" title="توكن ما قبل التداول وعقود P">
+                              P-TOKEN
+                            </span>
+                          )}
+                          {setup.category === 'NEW_LISTING' && (
+                            <span className="px-1.5 py-0.5 bg-purple-950/90 text-purple-300 border border-purple-800/80 rounded text-[9px] font-mono tracking-tight" title="إدراج توكن جديد في بينانس">
+                              NEW
+                            </span>
+                          )}
                           {setup.setupType === 'Whale Resilience' && (
                             <span title="Whale Resilience Setup Detected">
                               <Waves className="w-3 h-3 text-cyan-400" />
@@ -257,9 +337,14 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
                         </div>
                       </td>
 
-                      {/* Price */}
-                      <td className="py-2.5 px-3 whitespace-nowrap text-white font-medium">
-                        ${formatPrice(setup.price)}
+                      {/* Price & Entry Zone */}
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <div className="text-white font-medium">${formatPrice(setup.price)}</div>
+                        {setup.entryZone && (
+                          <div className="text-[10px] text-sky-400/90 font-mono" title="منطقة الدخول المثالية">
+                            Zone: ${formatPrice(setup.entryZone.min)}
+                          </div>
+                        )}
                       </td>
 
                       {/* 24h % */}
@@ -374,10 +459,17 @@ export const CryptoTable: React.FC<CryptoTableProps> = ({
 
                       {/* Setup State */}
                       <td className="py-2.5 px-3 whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold border ${stateColor}`}>
-                          <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                          {stateText}
-                        </span>
+                        <div className="flex flex-col gap-0.5">
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold border ${stateColor}`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                            {stateText}
+                          </span>
+                          {setup.setupType && setup.setupType !== 'None' && (
+                            <span className="text-[10px] text-neutral-400 font-mono">
+                              {setup.setupType === 'Early Breakout' ? '⚡ Early Breakout' : setup.setupType === 'Pullback Retest' ? '🔄 Pullback Retest' : setup.setupType}
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Action */}

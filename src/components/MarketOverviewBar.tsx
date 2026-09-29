@@ -5,11 +5,15 @@ import { MarketOverview } from '../types/crypto.ts';
 interface MarketOverviewBarProps {
   overview: MarketOverview | null;
   secondsRemaining: number;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
 export const MarketOverviewBar: React.FC<MarketOverviewBarProps> = ({
   overview,
   secondsRemaining,
+  onRefresh,
+  isRefreshing = false,
 }) => {
   const statusBadge = overview?.status === 'Market Bullish' ? (
     <div className="flex items-center gap-1.5 text-emerald-400 font-semibold text-sm">
@@ -38,7 +42,19 @@ export const MarketOverviewBar: React.FC<MarketOverviewBarProps> = ({
             {statusBadge}
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono text-neutral-400">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs font-mono text-neutral-400">
+            {onRefresh && (
+              <button
+                onClick={onRefresh}
+                disabled={isRefreshing}
+                title="تحديث فوري يدوي للمؤشرات والعملات"
+                className="px-2.5 py-1 rounded bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-emerald-400 font-bold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <Activity className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span>{isRefreshing ? 'جاري التحديث...' : 'تحديث يدوي ⚡'}</span>
+              </button>
+            )}
+
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-neutral-500" />
               Next Scan in: <strong className="text-neutral-200">{Math.max(0, secondsRemaining)}s</strong>

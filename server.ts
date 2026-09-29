@@ -32,7 +32,19 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   loadStore();
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = Number(process.env.PORT) || 3000;
+  const HOST = '0.0.0.0';
+
+  // Enable CORS for all incoming client requests
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+    next();
+  });
 
   app.use(express.json());
 
@@ -129,6 +141,134 @@ async function startServer() {
     }
   });
 
+  app.get('/api/stock-tokens', (req, res) => {
+    try {
+      const settings = getSettings();
+      const setups = getCurrentSetups();
+      const stockTokens = settings.stockTokens || [
+        'SNDKP',
+        'SNDKUSDTP',
+        'NSDKUSDTP',
+        'NSDKP',
+        'SPXUSDTP',
+        'PENGUUSDTP',
+        'MOVEUSDTP',
+        'THEUSDTP',
+        'SCRUSDTP',
+        'EIGENUSDTP',
+        'HMSTRUSDTP',
+        'CATIUSDTP',
+        'ACTUSDTP',
+        'PNUTUSDTP',
+      ];
+      const stockSetups = setups.filter(
+        s => s.isPToken || s.isStockToken || s.category === 'PREMARKET_P' || s.category === 'STOCK_INDEX' || stockTokens.includes(s.symbol)
+      );
+      res.json({ stockTokens, setups: stockSetups });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/api/symbols/add', async (req, res) => {
+    try {
+      const { symbol, isStock = false } = req.body;
+      if (!symbol) return res.status(400).json({ error: 'Symbol is required' });
+      const cleanSym = symbol.toUpperCase().trim();
+      const settings = getSettings();
+      const currentCustom = settings.customSymbols || [];
+      const currentStock = settings.stockTokens || [];
+
+      const isPToken =
+        isStock ||
+        cleanSym.endsWith('USDTP') ||
+        cleanSym.endsWith('P') ||
+        cleanSym.includes('SNDK') ||
+        cleanSym.includes('NSDK') ||
+        cleanSym.includes('SPX');
+
+      const nextCustom = currentCustom.includes(cleanSym) ? currentCustom : [cleanSym, ...currentCustom];
+      const nextStock = isPToken && !currentStock.includes(cleanSym) ? [cleanSym, ...currentStock] : currentStock;
+
+      updateSettings({ customSymbols: nextCustom, stockTokens: nextStock });
+
+      const setups = await runScanner(true);
+      const setup = setups.find(
+        s => s.symbol === cleanSym || s.symbol === cleanSym.replace(/USDTP$/, 'USDT') || s.symbol === cleanSym.replace(/P$/, 'USDTP')
+      );
+      res.json({ success: true, symbol: cleanSym, setup, setups, stockTokens: nextStock });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/api/symbols/remove', (req, res) => {
+    try {
+      const { symbol } = req.body;
+      if (!symbol) return res.status(400).json({ error: 'Symbol is required' });
+      const cleanSym = symbol.toUpperCase().trim();
+      const settings = getSettings();
+      const currentCustom = (settings.customSymbols || []).filter(s => s !== cleanSym);
+      const currentStock = (settings.stockTokens || []).filter(s => s !== cleanSym);
+
+      const updated = updateSettings({ customSymbols: currentCustom, stockTokens: currentStock });
+      res.json({ success: true, symbol: cleanSym, settings: updated });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/api/symbols/stock-presets', async (req, res) => {
+    try {
+      const { preset = 'stock' } = req.body;
+      const settings = getSettings();
+
+      let targetTokens: string[] = [];
+      if (preset === 'stock' || preset === 'premarket') {
+        targetTokens = [
+          'SNDKP',
+          'SNDKUSDTP',
+          'NSDKUSDTP',
+          'NSDKP',
+          'SPXUSDTP',
+          'PENGUUSDTP',
+          'MOVEUSDTP',
+          'THEUSDTP',
+          'SCRUSDTP',
+          'EIGENUSDTP',
+          'HMSTRUSDTP',
+          'CATIUSDTP',
+          'ACTUSDTP',
+          'PNUTUSDTP',
+        ];
+      } else if (preset === 'new_listings') {
+        targetTokens = [
+          'PENGUUSDT',
+          'MOVEUSDT',
+          'THEUSDT',
+          'ACXUSDT',
+          'ORCAUSDT',
+          'PNUTUSDT',
+          'ACTUSDT',
+          'MEUSDT',
+          'VIRTUALUSDT',
+          'AIUSDT',
+          'COWUSDT',
+          'CETUSUSDT',
+        ];
+      }
+
+      const mergedCustom = Array.from(new Set([...targetTokens, ...(settings.customSymbols || [])]));
+      const mergedStock = Array.from(new Set([...targetTokens, ...(settings.stockTokens || [])]));
+
+      updateSettings({ customSymbols: mergedCustom, stockTokens: mergedStock });
+      const setups = await runScanner(true);
+      res.json({ success: true, count: targetTokens.length, stockTokens: mergedStock, setups });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post('/api/telegram/test', async (req, res) => {
     try {
       const { token, chatId } = req.body;
@@ -183,8 +323,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, () => {
-    console.log(`SOSSKA Crypto Screener V2 Server running on http://localhost:${PORT}`);
+  app.listen(PORT, HOST, () => {
+    console.log(`SOSSKA Crypto Screener V2 Server running on http://${HOST}:${PORT}`);
     // Start background scanner
     startBackgroundScanner();
   });

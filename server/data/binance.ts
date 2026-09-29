@@ -10,7 +10,44 @@ const klinesCache = new Map<string, CacheItem<Candle[]>>();
 let tickerCache: CacheItem<any[]> | null = null;
 let dataProviderStatus: 'LIVE' | 'DELAYED' | 'DEMO' = 'LIVE';
 
-const PRIMARY_SYMBOLS = [
+export const PREMARKET_AND_P_SYMBOLS = [
+  'SNDKP',
+  'SNDKUSDTP',
+  'NSDKUSDTP',
+  'NSDKP',
+  'SPXUSDTP',
+  'SPXUSDT',
+  'PENGUUSDTP',
+  'MOVEUSDTP',
+  'THEUSDTP',
+  'SCRUSDTP',
+  'EIGENUSDTP',
+  'HMSTRUSDTP',
+  'CATIUSDTP',
+  'ACTUSDTP',
+  'PNUTUSDTP',
+];
+
+export const STOCK_AND_INDEX_SYMBOLS = PREMARKET_AND_P_SYMBOLS;
+
+export const NEW_LISTING_SYMBOLS = [
+  'PENGUUSDT',
+  'MOVEUSDT',
+  'THEUSDT',
+  'ACXUSDT',
+  'ORCAUSDT',
+  'PNUTUSDT',
+  'ACTUSDT',
+  'MEUSDT',
+  'VIRTUALUSDT',
+  'AIUSDT',
+  'COWUSDT',
+  'CETUSUSDT',
+];
+
+export const PRIMARY_SYMBOLS = [
+  ...STOCK_AND_INDEX_SYMBOLS,
+  ...NEW_LISTING_SYMBOLS,
   'BTCUSDT',
   'ETHUSDT',
   'SOLUSDT',
@@ -36,8 +73,41 @@ const PRIMARY_SYMBOLS = [
   'LTCUSDT',
   'WIFUSDT',
   'ICPUSDT',
-  'NEARUSDT',
   'FILUSDT',
+  'KASUSDT',
+  'TAOUSDT',
+  'AAVEUSDT',
+  'UNIUSDT',
+  'ATOMUSDT',
+  'RUNEUSDT',
+  'FTMUSDT',
+  'GALAUSDT',
+  'SANDUSDT',
+  'MANAUSDT',
+  'ALGOUSDT',
+  'STXUSDT',
+  'IMXUSDT',
+  'FLOKIUSDT',
+  'BONKUSDT',
+  'JUPUSDT',
+  'PYTHUSDT',
+  'PENDLEUSDT',
+  'ENAUSDT',
+  'WLDUSDT',
+  'DYDXUSDT',
+  'ONDOUSDT',
+  'BLURUSDT',
+  'BEAMUSDT',
+  'AXSUSDT',
+  'CHZUSDT',
+  'CRVUSDT',
+  'MKRUSDT',
+  'LDOUSDT',
+  'SNXUSDT',
+  'GRTUSDT',
+  'THETAUSDT',
+  'MATICUSDT',
+  'TRXUSDT',
 ];
 
 export function getDataProviderStatus(): 'LIVE' | 'DELAYED' | 'DEMO' {
@@ -103,7 +173,9 @@ export async function fetchKlines(
   interval: string = '1h',
   limit: number = 100
 ): Promise<Candle[]> {
-  const cacheKey = `${symbol}_${interval}_${limit}`;
+  const normSymbol = symbol.toUpperCase().trim();
+  const cleanSymbol = normSymbol.replace(/USDTP$/, 'USDT');
+  const cacheKey = `${normSymbol}_${interval}_${limit}`;
   const now = Date.now();
   const cached = klinesCache.get(cacheKey);
 
@@ -113,14 +185,18 @@ export async function fetchKlines(
   }
 
   const endpoints = [
-    `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`,
-    `https://data-api.binance.vision/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`,
+    // Binance Spot
+    `https://api.binance.com/api/v3/klines?symbol=${cleanSymbol}&interval=${interval}&limit=${limit}`,
+    `https://data-api.binance.vision/api/v3/klines?symbol=${cleanSymbol}&interval=${interval}&limit=${limit}`,
+    // Binance Futures (for SPX, stock tokens, indices, perpetuals)
+    `https://fapi.binance.com/fapi/v1/klines?symbol=${cleanSymbol}&interval=${interval}&limit=${limit}`,
+    `https://fapi.binance.com/fapi/v1/klines?symbol=${normSymbol}&interval=${interval}&limit=${limit}`,
   ];
 
   for (const url of endpoints) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
 
       const response = await fetch(url, {
         signal: controller.signal,
@@ -130,23 +206,25 @@ export async function fetchKlines(
 
       if (response.ok) {
         const raw = await response.json();
-        const candles: Candle[] = raw.map((k: any[]) => ({
-          timestamp: k[0],
-          open: parseFloat(k[1]),
-          high: parseFloat(k[2]),
-          low: parseFloat(k[3]),
-          close: parseFloat(k[4]),
-          volume: parseFloat(k[5]),
-          quoteVolume: parseFloat(k[7]),
-          trades: parseInt(k[8], 10),
-          takerBuyBaseVolume: parseFloat(k[9]),
-        }));
+        if (Array.isArray(raw) && raw.length > 0) {
+          const candles: Candle[] = raw.map((k: any[]) => ({
+            timestamp: k[0],
+            open: parseFloat(k[1]),
+            high: parseFloat(k[2]),
+            low: parseFloat(k[3]),
+            close: parseFloat(k[4]),
+            volume: parseFloat(k[5]),
+            quoteVolume: parseFloat(k[7]),
+            trades: parseInt(k[8], 10),
+            takerBuyBaseVolume: parseFloat(k[9]),
+          }));
 
-        klinesCache.set(cacheKey, { data: candles, timestamp: now });
-        return candles;
+          klinesCache.set(cacheKey, { data: candles, timestamp: now });
+          return candles;
+        }
       }
     } catch {
-      // Try fallback
+      // Try next endpoint or fallback
     }
   }
 
@@ -155,11 +233,14 @@ export async function fetchKlines(
   }
 
   // Generate deterministic synthetic candles based on current symbol benchmark
-  return generateDeterministicCandles(symbol, interval, limit);
+  return generateDeterministicCandles(normSymbol, interval, limit);
 }
 
 function getFallbackTickers(): any[] {
   const seeds = [
+    { symbol: 'NSDKUSDTP', lastPrice: '21480.50', priceChangePercent: '1.85', quoteVolume: '185000000', highPrice: '21650.00', lowPrice: '21220.00' },
+    { symbol: 'SPXUSDT', lastPrice: '0.4180', priceChangePercent: '3.40', quoteVolume: '15000000', highPrice: '0.4350', lowPrice: '0.3950' },
+    { symbol: 'SNDKUSDT', lastPrice: '48.50', priceChangePercent: '2.10', quoteVolume: '28000000', highPrice: '49.80', lowPrice: '47.20' },
     { symbol: 'BTCUSDT', lastPrice: '96450.00', priceChangePercent: '2.45', quoteVolume: '2450000000', highPrice: '97100.00', lowPrice: '94200.00' },
     { symbol: 'ETHUSDT', lastPrice: '2780.50', priceChangePercent: '3.12', quoteVolume: '1350000000', highPrice: '2810.00', lowPrice: '2690.00' },
     { symbol: 'SOLUSDT', lastPrice: '194.80', priceChangePercent: '5.60', quoteVolume: '980000000', highPrice: '198.50', lowPrice: '184.20' },
@@ -184,18 +265,31 @@ function getFallbackTickers(): any[] {
 }
 
 function generateDeterministicCandles(symbol: string, interval: string, limit: number): Candle[] {
-  let basePrice = 100;
-  if (symbol.startsWith('BTC')) basePrice = 96000;
-  else if (symbol.startsWith('ETH')) basePrice = 2750;
-  else if (symbol.startsWith('SOL')) basePrice = 190;
-  else if (symbol.startsWith('SEI')) basePrice = 0.48;
-  else if (symbol.startsWith('BNB')) basePrice = 640;
-  else if (symbol.startsWith('XRP')) basePrice = 2.3;
-  else if (symbol.startsWith('DOGE')) basePrice = 0.24;
-  else if (symbol.startsWith('SUI')) basePrice = 3.4;
-  else if (symbol.startsWith('NEAR')) basePrice = 5.8;
-  else if (symbol.startsWith('LINK')) basePrice = 19.2;
-  else if (symbol.startsWith('PEPE')) basePrice = 0.000018;
+  let basePrice = 1.0;
+  const upper = symbol.toUpperCase();
+  if (upper.includes('NSDK') || upper.includes('NDX')) basePrice = 21450.0;
+  else if (upper.includes('SNDK')) basePrice = 48.5;
+  else if (upper.includes('SPX')) basePrice = 0.418;
+  else if (upper.includes('PENGU')) basePrice = 0.0385;
+  else if (upper.includes('MOVE')) basePrice = 0.852;
+  else if (upper.includes('THE')) basePrice = 2.45;
+  else if (upper.includes('SCR')) basePrice = 0.72;
+  else if (upper.includes('EIGEN')) basePrice = 3.15;
+  else if (upper.includes('HMSTR')) basePrice = 0.00325;
+  else if (upper.includes('CATI')) basePrice = 0.54;
+  else if (upper.includes('ACT')) basePrice = 0.485;
+  else if (upper.includes('PNUT')) basePrice = 1.15;
+  else if (upper.startsWith('BTC')) basePrice = 96000;
+  else if (upper.startsWith('ETH')) basePrice = 2750;
+  else if (upper.startsWith('SOL')) basePrice = 190;
+  else if (upper.startsWith('SEI')) basePrice = 0.48;
+  else if (upper.startsWith('BNB')) basePrice = 640;
+  else if (upper.startsWith('XRP')) basePrice = 2.3;
+  else if (upper.startsWith('DOGE')) basePrice = 0.24;
+  else if (upper.startsWith('SUI')) basePrice = 3.4;
+  else if (upper.startsWith('NEAR')) basePrice = 5.8;
+  else if (upper.startsWith('LINK')) basePrice = 19.2;
+  else if (upper.startsWith('PEPE')) basePrice = 0.000018;
 
   const now = Date.now();
   let intervalMs = 3600000;

@@ -1,49 +1,62 @@
 import { ScreenerSettings, TradingSetup } from '../../src/types/crypto.ts';
+import { getSignalsHistory } from '../storage/store.ts';
 
 // Track sent alerts to prevent duplicate spam (symbol -> lastAlertState)
 const alertCache = new Map<string, { state: string; timestamp: number }>();
 
 export function formatTelegramSignalMessage(setup: TradingSetup): string {
   const isLong = setup.state === 'CONFIRMED_LONG';
-  const stateEmoji = isLong ? '🟢 CONFIRMED LONG' : setup.state === 'CONFIRMED_SHORT' ? '🔴 CONFIRMED SHORT' : '🟡 WAIT FOR CONFIRMATION';
-  const typeEmoji = setup.setupType === 'Whale Resilience' ? '🐳' : '⚡';
+  const stateEmoji = isLong ? '🟢 CONFIRMED LONG (صعود مؤكد)' : setup.state === 'CONFIRMED_SHORT' ? '🔴 CONFIRMED SHORT (هبوط مؤكد)' : '🟡 WAIT FOR CONFIRMATION';
+  const typeEmoji = setup.setupType === 'Whale Resilience' ? '🐳' : setup.setupType === 'Early Breakout' ? '🚀' : setup.setupType === 'Pullback Retest' ? '⚡' : '🔥';
+  const categoryBadge = setup.isPToken || setup.isStockToken || setup.category === 'PREMARKET_P' || setup.symbol.endsWith('USDTP') || setup.symbol.endsWith('P')
+    ? '⚡ *الفئة:* توكن ما قبل التداول وعقود P في بينانس (Binance Pre-Market & P-Token)\n'
+    : setup.category === 'NEW_LISTING'
+    ? '🆕 *الفئة:* إدراج توكن جديد في بينانس (New Binance Listing)\n'
+    : '';
 
   const mtfEmoji = (status: 'bullish' | 'bearish' | 'neutral') =>
     status === 'bullish' ? '🟢' : status === 'bearish' ? '🔴' : '⚪';
 
-  const whyPoints = setup.reasons.slice(0, 5).map(r => `✓ ${r}`).join('\n');
+  const whyPoints = setup.reasons.slice(0, 4).map(r => `✓ ${r}`).join('\n');
 
-  return `🚨 *NEW SIGNAL ALERT*
+  const entryZoneText = setup.entryZone
+    ? `📍 *منطقة الدخول الموصى بها (Entry Zone):* $${setup.entryZone.min} - $${setup.entryZone.max}\n🎯 *نقطة الارتداد المفضلة (Pullback Limit):* $${setup.entryZone.optimalPullback}`
+    : `📍 *سعر الدخول:* $${setup.entry}`;
 
-${typeEmoji} *Setup Type:* ${setup.setupType}
-💎 *${setup.symbol}*
-💵 *Entry:* $${setup.entry}
-📊 *Score:* ${setup.score}/100 (${setup.scoreBreakdown.scoreLabel})
+  const tipText = setup.executionTip
+    ? `\n💡 *نصيحة الدخول الرابح:*\n${setup.executionTip}\n`
+    : '';
+
+  return `🚨 *SOSSKA EARLY SIGNAL ALERT* ⚡
+
+${typeEmoji} *Setup:* ${setup.setupType}
+💎 *الرمز:* #${setup.symbol}
+${categoryBadge}📊 *التقييم الفني:* ${setup.score}/100 (${setup.scoreBreakdown.scoreLabel})
 ${stateEmoji}
 
-📈 *Technical Indicators:*
-• EMA 9: $${setup.indicators.ema9.toFixed(4)}
-• EMA 21: $${setup.indicators.ema21.toFixed(4)}
-• EMA 200: $${setup.indicators.ema200.toFixed(4)}
+💵 *السعر الحالي لحظة الإشارة:* $${setup.price}
+${entryZoneText}
+
+🎯 *الأهداف ووقف الخسارة المحسوبة:*
+🎯 *الهدف الأول (TP1):* $${setup.tp1} (تأمين 50% ونقل الوقف لنقطة الدخول)
+🎯 *الهدف الثاني (TP2):* $${setup.tp2}
+🛑 *وقف الخسارة (SL):* $${setup.sl} (مخاطرة محكمة تحت الدعم)
+⚖️ *نسبة العائد للمخاطرة (R:R):* 1:${setup.riskRewardRatio}
+
+📈 *مؤشرات فريم 15 دقيقة (Fast Execution):*
+• EMA 9: $${setup.indicators.ema9.toFixed(4)} | EMA 21: $${setup.indicators.ema21.toFixed(4)}
 • VWAP: $${setup.indicators.vwap.toFixed(4)} (${setup.indicators.priceVsVwap === 'above' ? 'Above 🟢' : 'Below 🔴'})
-• RSI (14): ${setup.indicators.rsi.toFixed(1)}
-• MFI (14): ${setup.indicators.mfi.toFixed(1)}
+• RSI: ${setup.indicators.rsi.toFixed(1)} | MFI: ${setup.indicators.mfi.toFixed(1)}
 • Stoch: K ${setup.indicators.stochK.toFixed(1)} / D ${setup.indicators.stochD.toFixed(1)}
 • Vol Change: ${setup.indicators.volumeChangePercent >= 0 ? '+' : ''}${setup.indicators.volumeChangePercent.toFixed(1)}%
 
-⏳ *Multi-Timeframe Alignment (${setup.mtf.alignmentFraction}):*
+⏳ *توافق الفريمات MTF (${setup.mtf.alignmentFraction}):*
 5M: ${mtfEmoji(setup.mtf.tf5m.trend)} | 15M: ${mtfEmoji(setup.mtf.tf15m.trend)} | 1H: ${mtfEmoji(setup.mtf.tf1h.trend)} | 4H: ${mtfEmoji(setup.mtf.tf4h.trend)}
-
-🎯 *Targets & Risk:*
-🎯 *TP1:* $${setup.tp1}
-🎯 *TP2:* $${setup.tp2}
-🛑 *SL:* $${setup.sl}
-⚖️ *R:R:* 1:${setup.riskRewardRatio}
-
-💡 *Why this setup?*
+${tipText}
+💡 *أسباب الإشارة المبكرة:*
 ${whyPoints}
 
-🔗 [Open TradingView](https://www.tradingview.com/chart/?symbol=BINANCE:${setup.symbol})
+🔗 [فتح شارت Binance على TradingView](https://www.tradingview.com/chart/?symbol=BINANCE:${setup.symbol})
 *SOSSKA CRYPTO SCREENER V2*`;
 }
 
@@ -142,6 +155,40 @@ Use this bot to get real-time institutional-grade crypto trading alerts.
 /settings - View current bot thresholds
 
 _Market analysis tool. Not financial advice._`;
+  }
+
+  if (cleanCmd.startsWith('/track') || cleanCmd.startsWith('/pnl') || cleanCmd.startsWith('/signals')) {
+    const history = getSignalsHistory();
+    const activeOrRecent = history.slice(0, 6);
+    if (activeOrRecent.length === 0) return 'No signals currently recorded.';
+
+    return `📊 *متتبع مسار التوصيات والربح اللحظي (Signal Trajectory Tracker)*\n\n` +
+      activeOrRecent.map(s => {
+        const pnl = s.pnlPercent ?? 0;
+        const pnlSign = pnl >= 0 ? '+' : '';
+        const pnlEmoji = pnl >= 0 ? '🟢' : '🔴';
+        const isLong = s.signalType === 'CONFIRMED_LONG';
+        const trajText = s.trajectory === 'STRONG_CONTINUATION'
+          ? 'استمرار قوي 🚀'
+          : s.trajectory === 'CORRECT_DIRECTION'
+          ? 'اتجاه صحيح ✅'
+          : s.trajectory === 'TESTING_ENTRY'
+          ? 'تذبذب دخول 🟡'
+          : 'ارتداد عكسي 🔴';
+        const accText = s.entryAccuracy === 'PERFECT_TIMING'
+          ? 'توقيت مثالي 🎯'
+          : s.entryAccuracy === 'SOUND_ENTRY'
+          ? 'دخول سليم 100%'
+          : s.entryAccuracy === 'FAILED_ENTRY'
+          ? 'فشل التحليل ❌'
+          : 'تحت الاختبار ⚠️';
+
+        return `💎 *${s.symbol}* (${isLong ? 'LONG 🟢' : 'SHORT 🔴'})\n` +
+          `• سعر الدخول: $${s.entry} ➡️ السعر: $${s.currentPrice || s.exitPrice || s.entry}\n` +
+          `• الربح/الخسارة: *${pnlSign}${pnl.toFixed(2)}%* ${pnlEmoji} (${s.status})\n` +
+          `• المسار: *${trajText}* | دقة الدخول: *${accText}*\n` +
+          `• ذروة الربح: +${(s.maxRunUpPercent ?? pnl).toFixed(2)}% | أقصى تراجع: -${(s.maxDrawdownPercent ?? 0).toFixed(2)}%`;
+      }).join('\n\n');
   }
 
   if (cleanCmd.startsWith('/top')) {

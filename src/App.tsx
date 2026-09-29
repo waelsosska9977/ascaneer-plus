@@ -5,16 +5,36 @@ import { CryptoTable } from './components/CryptoTable.tsx';
 import { Footer } from './components/Footer.tsx';
 import { Header } from './components/Header.tsx';
 import { HistoryView } from './components/HistoryView.tsx';
+import { LiveSignalsTracker } from './components/LiveSignalsTracker.tsx';
 import { MarketOverviewBar } from './components/MarketOverviewBar.tsx';
 import { MobileCardView } from './components/MobileCardView.tsx';
 import { PerformanceView } from './components/PerformanceView.tsx';
 import { RiskCalculatorModal } from './components/RiskCalculatorModal.tsx';
 import { ScoreBreakdownModal } from './components/ScoreBreakdownModal.tsx';
 import { SettingsView } from './components/SettingsView.tsx';
+import { StockTokensModal } from './components/StockTokensModal.tsx';
 import { TelegramSimulatorModal } from './components/TelegramSimulatorModal.tsx';
 import { TopSetupsBanner } from './components/TopSetupsBanner.tsx';
 import { WhaleFlowView } from './components/WhaleFlowView.tsx';
 import { MarketOverview, ScreenerSettings, TradingSetup } from './types/crypto.ts';
+
+// Safe JSON fetcher with timeout and resilient error handling
+async function safeFetchJson<T>(url: string, options?: RequestInit): Promise<T | null> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const res = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    // Silently return null on transient connection/restarting states
+    return null;
+  }
+}
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'screener' | 'whale' | 'history' | 'performance' | 'backtest' | 'settings'>('screener');
@@ -26,20 +46,20 @@ export default function App() {
   const [selectedScoreSetup, setSelectedScoreSetup] = useState<TradingSetup | null>(null);
   const [isRiskCalcOpen, setIsRiskCalcOpen] = useState(false);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
+  const [isStockTokensModalOpen, setIsStockTokensModalOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState(60);
 
-  // Fetch initial data
+  // Fetch market data safely with resilient fallback
   const loadMarketData = useCallback(async () => {
     try {
-      const [overviewRes, scanRes, settingsRes] = await Promise.all([
-        fetch('/api/overview'),
-        fetch('/api/scan'),
-        fetch('/api/settings'),
+      const [oData, sData, setts] = await Promise.all([
+        safeFetchJson<MarketOverview>('/api/overview'),
+        safeFetchJson<TradingSetup[]>('/api/scan'),
+        safeFetchJson<ScreenerSettings>('/api/settings'),
       ]);
 
-      if (overviewRes.ok) {
-        const oData = await overviewRes.json();
+      if (oData) {
         setOverview(oData);
         if (oData.nextScanTimestamp) {
           const rem = Math.max(0, Math.round((oData.nextScanTimestamp - Date.now()) / 1000));
@@ -47,17 +67,15 @@ export default function App() {
         }
       }
 
-      if (scanRes.ok) {
-        const sData = await scanRes.json();
-        if (Array.isArray(sData)) setSetups(sData);
+      if (Array.isArray(sData) && sData.length > 0) {
+        setSetups(sData);
       }
 
-      if (settingsRes.ok) {
-        const setts = await settingsRes.json();
+      if (setts) {
         setSettings(setts);
       }
-    } catch (err) {
-      console.error('Error loading market data:', err);
+    } catch {
+      // Quiet fail during server restart or sleep
     }
   }, []);
 
@@ -84,14 +102,13 @@ export default function App() {
   const handleManualRefresh = async () => {
     setIsRefreshing(true);
     try {
-      const res = await fetch('/api/scan/refresh', { method: 'POST' });
-      const data = await res.json();
-      if (data.setups) {
+      const data = await safeFetchJson<{ setups?: TradingSetup[] }>('/api/scan/refresh', { method: 'POST' });
+      if (data?.setups && Array.isArray(data.setups)) {
         setSetups(data.setups);
       }
       await loadMarketData();
-    } catch (err) {
-      console.error('Error refreshing scan:', err);
+    } catch {
+      // Handled safely
     } finally {
       setIsRefreshing(false);
     }
@@ -99,15 +116,16 @@ export default function App() {
 
   const handleUpdateSettings = async (newSettings: Partial<ScreenerSettings>) => {
     try {
-      const res = await fetch('/api/settings', {
+      const data = await safeFetchJson<ScreenerSettings>('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSettings),
       });
-      const data = await res.json();
-      setSettings(data);
-    } catch (err) {
-      console.error('Error updating settings:', err);
+      if (data) {
+        setSettings(data);
+      }
+    } catch {
+      // Handled safely
     }
   };
 
@@ -122,12 +140,15 @@ export default function App() {
         isRefreshing={isRefreshing}
         onOpenRiskCalc={() => setIsRiskCalcOpen(true)}
         onOpenTelegramModal={() => setIsTelegramModalOpen(true)}
+        onOpenStockTokensModal={() => setIsStockTokensModalOpen(true)}
       />
 
       {/* Market Overview Statistics Banner */}
       <MarketOverviewBar
         overview={overview}
         secondsRemaining={secondsRemaining}
+        onRefresh={handleManualRefresh}
+        isRefreshing={isRefreshing}
       />
 
       {/* Main Tab Content */}
@@ -140,12 +161,23 @@ export default function App() {
               onSelectSetup={setup => setSelectedSetup(setup)}
             />
 
+            {/* Live Signals & Real-Time Trajectory Tracker */}
+            <LiveSignalsTracker
+              onSelectSymbol={symbol => {
+                const s = setups.find(x => x.symbol === symbol);
+                if (s) setSelectedSetup(s);
+              }}
+            />
+
             {/* Desktop Table View */}
             <div className="hidden lg:block">
               <CryptoTable
                 setups={setups}
                 onSelectSetup={setup => setSelectedSetup(setup)}
                 onOpenScoreModal={setup => setSelectedScoreSetup(setup)}
+                onOpenStockTokensModal={() => setIsStockTokensModalOpen(true)}
+                onRefresh={handleManualRefresh}
+                isRefreshing={isRefreshing}
               />
             </div>
 
@@ -154,6 +186,9 @@ export default function App() {
               <MobileCardView
                 setups={setups}
                 onSelectSetup={setup => setSelectedSetup(setup)}
+                onOpenStockTokensModal={() => setIsStockTokensModalOpen(true)}
+                onRefresh={handleManualRefresh}
+                isRefreshing={isRefreshing}
               />
             </div>
           </>
@@ -216,6 +251,16 @@ export default function App() {
           onUpdateSettings={handleUpdateSettings}
         />
       )}
+
+      {/* Binance Stock Tokens & Equities Manager Modal */}
+      <StockTokensModal
+        isOpen={isStockTokensModalOpen}
+        onClose={() => setIsStockTokensModalOpen(false)}
+        setups={setups}
+        stockTokens={settings?.stockTokens || []}
+        onSelectSetup={setup => setSelectedSetup(setup)}
+        onRefreshSetups={handleManualRefresh}
+      />
 
       {/* Terminal Footer */}
       <Footer />

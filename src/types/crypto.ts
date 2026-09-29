@@ -8,6 +8,8 @@ export type SignalState =
 export type SetupType =
   | 'Standard Long'
   | 'Standard Short'
+  | 'Early Breakout'
+  | 'Pullback Retest'
   | 'Whale Resilience'
   | 'Liquidity Expansion'
   | 'Mean Reversion'
@@ -118,6 +120,18 @@ export interface TradingSetup {
     volumeExpansion: boolean;
     whaleResilience: boolean;
   };
+  entryZone?: {
+    min: number;
+    max: number;
+    optimalPullback: number;
+    recommendedOrderType: 'LIMIT_PULLBACK' | 'MARKET_BREAKOUT';
+  };
+  executionTip?: string;
+  timingSignal?: 'EARLY_TRIGGER' | 'PULLBACK_CONFIRMED' | 'BREAKOUT_MOMENTUM';
+  leadTimeframe?: '5m' | '15m' | '1h';
+  category?: 'PREMARKET_P' | 'STOCK_INDEX' | 'NEW_LISTING' | 'STANDARD_CRYPTO';
+  isPToken?: boolean;
+  isStockToken?: boolean;
   lastUpdated: number;
 }
 
@@ -137,6 +151,18 @@ export interface MarketOverview {
   dataProviderStatus: 'LIVE' | 'DELAYED' | 'DEMO';
 }
 
+export type SignalTrajectory =
+  | 'STRONG_CONTINUATION'
+  | 'CORRECT_DIRECTION'
+  | 'TESTING_ENTRY'
+  | 'REVERSAL_AGAINST';
+
+export type EntryAccuracy =
+  | 'PERFECT_TIMING'
+  | 'SOUND_ENTRY'
+  | 'EXTENDED_ENTRY'
+  | 'FAILED_ENTRY';
+
 export interface SignalHistoryRecord {
   id: string;
   symbol: string;
@@ -144,6 +170,7 @@ export interface SignalHistoryRecord {
   signalType: SignalState;
   setupType: SetupType;
   entry: number;
+  entryZone?: { min: number; max: number; optimalPullback: number };
   tp1: number;
   tp2: number;
   sl: number;
@@ -154,6 +181,11 @@ export interface SignalHistoryRecord {
   exitPrice?: number;
   exitTimestamp?: number;
   pnlPercent?: number;
+  maxRunUpPercent?: number;       // Peak profit reached in intended direction
+  maxDrawdownPercent?: number;    // Peak negative excursion against entry
+  trajectory?: SignalTrajectory;  // Real-time direction status
+  entryAccuracy?: EntryAccuracy;  // Evaluation of entry validity
+  continuationNotes?: string;
   reasons: string[];
 }
 
@@ -212,6 +244,7 @@ export interface ScreenerSettings {
   scanIntervalSeconds: number;
   minScoreAlert: number;
   min24hVolumeUsd: number;
+  maxCoinsScanned: number; // e.g. 50, 100, 200
   riskPercentage: number;
   accountSizeUsd: number;
   tp1Multiplier: number; // e.g. 1.5
@@ -224,6 +257,9 @@ export interface ScreenerSettings {
   enableShort: boolean;
   enableWhaleFlow: boolean;
   demoMode: boolean;
+  customSymbols?: string[];
+  stockTokens?: string[];
+  premarketTokens?: string[];
 }
 
 export interface TelegramTestResult {
