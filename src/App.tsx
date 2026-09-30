@@ -48,7 +48,7 @@ export default function App() {
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const [isStockTokensModalOpen, setIsStockTokensModalOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [secondsRemaining, setSecondsRemaining] = useState(60);
+  const [secondsRemaining, setSecondsRemaining] = useState(300);
 
   // Fetch market data safely with resilient fallback
   const loadMarketData = useCallback(async () => {
@@ -89,14 +89,14 @@ export default function App() {
 
     // 1-second countdown timer for next scan
     const countdownInterval = setInterval(() => {
-      setSecondsRemaining(prev => (prev > 0 ? prev - 1 : 60));
+      setSecondsRemaining(prev => (prev > 0 ? prev - 1 : (settings?.scanIntervalSeconds || 300)));
     }, 1000);
 
     return () => {
       clearInterval(pollInterval);
       clearInterval(countdownInterval);
     };
-  }, [loadMarketData]);
+  }, [loadMarketData, settings?.scanIntervalSeconds]);
 
   // On-demand manual scan trigger
   const handleManualRefresh = async () => {

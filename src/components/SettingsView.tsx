@@ -53,9 +53,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 className="w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-white font-mono focus:outline-none focus:border-emerald-500"
               >
                 <option value={30}>Every 30 Seconds (Fast)</option>
-                <option value={60}>Every 60 Seconds (Standard Recommended)</option>
-                <option value={120}>Every 120 Seconds</option>
-                <option value={300}>Every 5 Minutes</option>
+                <option value={60}>Every 60 Seconds</option>
+                <option value={120}>Every 120 Seconds (2 Minutes)</option>
+                <option value={300}>Every 300 Seconds (5 Minutes - Recommended)</option>
+                <option value={600}>Every 600 Seconds (10 Minutes)</option>
               </select>
             </div>
 

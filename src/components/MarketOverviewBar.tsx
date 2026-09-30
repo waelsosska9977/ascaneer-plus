@@ -57,7 +57,15 @@ export const MarketOverviewBar: React.FC<MarketOverviewBarProps> = ({
 
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-neutral-500" />
-              Next Scan in: <strong className="text-neutral-200">{Math.max(0, secondsRemaining)}s</strong>
+              Next Scan in:{' '}
+              <strong className="text-neutral-200">
+                {Math.max(0, secondsRemaining)}s
+                {secondsRemaining >= 60 && (
+                  <span className="text-neutral-400 font-normal ml-1">
+                    ({Math.floor(secondsRemaining / 60)}:{String(secondsRemaining % 60).padStart(2, '0')})
+                  </span>
+                )}
+              </strong>
             </span>
             <span className="hidden sm:inline text-neutral-600">·</span>
             <span className="hidden sm:inline">

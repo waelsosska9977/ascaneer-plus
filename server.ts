@@ -11,6 +11,7 @@ import {
   getLastScanTime,
   getMarketOverview,
   isScannerBusy,
+  restartBackgroundScanner,
   runScanner,
   startBackgroundScanner,
 } from './server/engine/scanner.ts';
@@ -135,6 +136,7 @@ async function startServer() {
       if (typeof req.body.demoMode === 'boolean') {
         setDemoMode(req.body.demoMode);
       }
+      restartBackgroundScanner();
       res.json(updated);
     } catch (err: any) {
       res.status(500).json({ error: err.message });

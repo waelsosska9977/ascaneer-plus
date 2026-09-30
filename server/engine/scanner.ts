@@ -214,6 +214,18 @@ export function startBackgroundScanner(): void {
   console.log(`Background scanner scheduled every ${settings.scanIntervalSeconds}s`);
 }
 
+export function restartBackgroundScanner(): void {
+  const settings = getSettings();
+  if (scannerTimer) clearInterval(scannerTimer);
+
+  const intervalMs = Math.max(30, settings.scanIntervalSeconds) * 1000;
+  scannerTimer = setInterval(() => {
+    runScanner().catch(console.error);
+  }, intervalMs);
+
+  console.log(`Background scanner interval updated to ${settings.scanIntervalSeconds}s`);
+}
+
 function createFallbackStockTicker(upperSym: string): any {
   let lastPrice = '1.00';
   let quoteVolume = '45000000';

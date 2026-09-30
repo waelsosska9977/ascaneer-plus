@@ -41,7 +41,7 @@ export const DEFAULT_PREMARKET_TOKENS: string[] = [
 export const DEFAULT_STOCK_TOKENS: string[] = DEFAULT_PREMARKET_TOKENS;
 
 const DEFAULT_SETTINGS: ScreenerSettings = {
-  scanIntervalSeconds: 30,
+  scanIntervalSeconds: 300,
   minScoreAlert: 68,
   min24hVolumeUsd: 10000000,
   maxCoinsScanned: 60,
