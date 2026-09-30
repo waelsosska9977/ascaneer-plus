@@ -19,6 +19,7 @@ export const TelegramSimulatorModal: React.FC<TelegramSimulatorModalProps> = ({
 }) => {
   const [botToken, setBotToken] = useState(settings.telegramBotToken || '');
   const [chatId, setChatId] = useState(settings.telegramChatId || '');
+  const [enableChart, setEnableChart] = useState(settings.enableTelegramChart !== false);
   const [commandInput, setCommandInput] = useState('/top');
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [isSendingTest, setIsSendingTest] = useState(false);
@@ -37,11 +38,12 @@ export const TelegramSimulatorModal: React.FC<TelegramSimulatorModalProps> = ({
       telegramBotToken: botToken,
       telegramChatId: chatId,
       enableTelegram: true,
+      enableTelegramChart: enableChart,
     });
-    setTestResult({ success: true, message: 'Telegram credentials saved to Screener settings.' });
+    setTestResult({ success: true, message: 'Telegram credentials & chart settings saved to Screener settings.' });
   };
 
-  const handleSendTestAlert = async () => {
+  const handleSendTestAlert = async (sendChart: boolean = true) => {
     setIsSendingTest(true);
     setTestResult(null);
 
@@ -49,7 +51,7 @@ export const TelegramSimulatorModal: React.FC<TelegramSimulatorModalProps> = ({
       const res = await fetch('/api/telegram/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: botToken, chatId }),
+        body: JSON.stringify({ token: botToken, chatId, sendChart }),
       });
       const data = await res.json();
       setTestResult(data);
@@ -143,7 +145,24 @@ export const TelegramSimulatorModal: React.FC<TelegramSimulatorModalProps> = ({
                 />
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
+              <div className="pt-1">
+                <label className="flex items-center gap-2 p-2 bg-neutral-950/80 border border-neutral-800 rounded cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={enableChart}
+                    onChange={e => setEnableChart(e.target.checked)}
+                    className="accent-emerald-500 w-4 h-4 cursor-pointer"
+                  />
+                  <div className="text-[11px] font-mono">
+                    <span className="text-white font-bold block">إرسال صورة الشارت الفني مع التوصية 📊</span>
+                    <span className="text-neutral-400 font-sans text-[10px]">
+                      يرسل شارت الشموع اليابانية (15M) ومستويات الدخول والأهداف ووقف الخسارة مباشرة على تيليجرام
+                    </span>
+                  </div>
+                </label>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 pt-1">
                 <button
                   onClick={handleSaveCredentials}
                   className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded text-xs font-mono font-medium transition-colors cursor-pointer"
@@ -151,12 +170,21 @@ export const TelegramSimulatorModal: React.FC<TelegramSimulatorModalProps> = ({
                   Save Credentials
                 </button>
                 <button
-                  onClick={handleSendTestAlert}
+                  onClick={() => handleSendTestAlert(true)}
                   disabled={isSendingTest}
-                  className="px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded text-xs font-mono font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                  title="إرسال تجربة فورية مع صورة شارت حية"
+                  className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded text-xs font-mono font-bold transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                 >
                   <Send className="w-3 h-3" />
-                  <span>{isSendingTest ? 'Sending...' : 'Send Live Test'}</span>
+                  <span>{isSendingTest ? 'Sending...' : 'تجربة مع الشارت 📊'}</span>
+                </button>
+                <button
+                  onClick={() => handleSendTestAlert(false)}
+                  disabled={isSendingTest}
+                  title="إرسال رسالة نصية فقط بدون شارت"
+                  className="px-2.5 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded text-xs font-mono font-medium transition-colors disabled:opacity-50 cursor-pointer"
+                >
+                  <span>نص فقط 💬</span>
                 </button>
               </div>
 

@@ -2,10 +2,11 @@ import { MarketOverview, TradingSetup } from '../../src/types/crypto.ts';
 import { fetch24hTickers, fetchKlines, getDataProviderStatus } from '../data/binance.ts';
 import { getSettings, loadStore, recordOrUpdateSignal } from '../storage/store.ts';
 import { evaluateTradingSetup } from './signalEngine.ts';
-import { processSetupAlert } from './telegram.ts';
+import { processSetupAlert, processTargetHitAlert } from './telegram.ts';
 
 let currentSetups: TradingSetup[] = [];
 let lastScanTimestamp = Date.now();
+let lastScanStartTime = 0;
 let isScanning = false;
 let scannerTimer: NodeJS.Timeout | null = null;
 
@@ -22,11 +23,19 @@ export function isScannerBusy(): boolean {
 }
 
 export async function runScanner(force: boolean = false): Promise<TradingSetup[]> {
+  const now = Date.now();
+  // Safety watchdog: release lock if previous scan was hanging for > 90 seconds
+  if (isScanning && now - lastScanStartTime > 90000) {
+    console.warn('[Scanner Watchdog] Releasing stuck scanner lock after 90s');
+    isScanning = false;
+  }
+
   if (isScanning && !force) {
     return currentSetups;
   }
 
   isScanning = true;
+  lastScanStartTime = Date.now();
   const startTime = Date.now();
   const settings = getSettings();
 
@@ -124,7 +133,12 @@ export async function runScanner(force: boolean = false): Promise<TradingSetup[]
             );
 
             // Record into persistent history & check resolution of previous signals
-            recordOrUpdateSignal(setup);
+            const recordResult = recordOrUpdateSignal(setup);
+            if (recordResult?.statusChanged && (recordResult.updatedRecord.status === 'TP1 Hit' || recordResult.updatedRecord.status === 'TP2 Hit' || recordResult.updatedRecord.status === 'SL Hit')) {
+              if (settings.enableTelegram) {
+                processTargetHitAlert(recordResult.updatedRecord, settings).catch(() => {});
+              }
+            }
 
             // Trigger telegram if setup is high conviction
             if (settings.enableTelegram) {

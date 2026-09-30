@@ -53,6 +53,7 @@ const DEFAULT_SETTINGS: ScreenerSettings = {
   enableTelegram: true,
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '7977896155:AAGoM4Hqxf-1-5GDANqRsJT1TMaBE1joS3E',
   telegramChatId: process.env.TELEGRAM_CHAT_ID || '1076270331',
+  telegramSubscribers: ['1076270331'],
   enableLong: true,
   enableShort: true,
   enableWhaleFlow: true,
@@ -298,6 +299,34 @@ export function updateSettings(newSettings: Partial<ScreenerSettings>): Screener
   return memoryStore.settings;
 }
 
+export function getTelegramSubscribers(): string[] {
+  const current = memoryStore.settings.telegramSubscribers || [];
+  const primary = memoryStore.settings.telegramChatId;
+  const set = new Set<string>();
+  if (primary) set.add(String(primary).trim());
+  for (const s of current) {
+    if (s) set.add(String(s).trim());
+  }
+  return Array.from(set);
+}
+
+export function addTelegramSubscriber(chatId: string): void {
+  const clean = String(chatId).trim();
+  if (!clean) return;
+  const current = memoryStore.settings.telegramSubscribers || [];
+  if (!current.includes(clean)) {
+    memoryStore.settings.telegramSubscribers = [...current, clean];
+    saveStore();
+  }
+}
+
+export function removeTelegramSubscriber(chatId: string): void {
+  const clean = String(chatId).trim();
+  const current = memoryStore.settings.telegramSubscribers || [];
+  memoryStore.settings.telegramSubscribers = current.filter(id => id !== clean);
+  saveStore();
+}
+
 export function getSignalsHistory(): SignalHistoryRecord[] {
   return memoryStore.signalsHistory;
 }
@@ -407,14 +436,17 @@ export function recordOrUpdateSignal(setup: TradingSetup): { isNew: boolean; upd
     current.entryAccuracy = entryAccuracy;
     current.continuationNotes = continuationNotes;
 
+    const oldStatus = current.status;
+    let statusChanged = false;
     if (updatedStatus !== current.status) {
+      statusChanged = true;
       current.status = updatedStatus;
       current.exitPrice = exitPrice;
       current.exitTimestamp = Date.now();
     }
 
     saveStore();
-    return { isNew: false, updatedRecord: current };
+    return { isNew: false, updatedRecord: current, statusChanged, previousStatus: oldStatus };
   }
 
   // If no active signal, create new one if state is confirmed

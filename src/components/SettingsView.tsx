@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Save, Settings, ShieldAlert, Sliders } from 'lucide-react';
+import { Check, LineChart, Save, Send, Settings, ShieldAlert, Sliders } from 'lucide-react';
 import { ScreenerSettings } from '../types/crypto.ts';
 
 interface SettingsViewProps {
@@ -13,6 +13,30 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 }) => {
   const [formData, setFormData] = useState<ScreenerSettings>(settings);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [isTestingTelegram, setIsTestingTelegram] = useState(false);
+  const [telegramTestStatus, setTelegramTestStatus] = useState<{ success: boolean; message: string } | null>(null);
+
+  const handleTestTelegram = async (sendChart: boolean = true) => {
+    setIsTestingTelegram(true);
+    setTelegramTestStatus(null);
+    try {
+      const res = await fetch('/api/telegram/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: formData.telegramBotToken,
+          chatId: formData.telegramChatId,
+          sendChart,
+        }),
+      });
+      const data = await res.json();
+      setTelegramTestStatus(data);
+    } catch (err: any) {
+      setTelegramTestStatus({ success: false, message: err.message });
+    } finally {
+      setIsTestingTelegram(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -326,6 +350,130 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               + إضافة توكنات بينانس الجديدة
             </button>
           </div>
+        </div>
+
+        {/* 5. Telegram Alerts & Real-time Chart Delivery */}
+        <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-5 space-y-4">
+          <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
+            <div className="flex items-center gap-2">
+              <Send className="w-4 h-4 text-sky-400" />
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                5. إعدادات إشعارات تيليجرام وصور الشارت (Telegram Alerts & Chart Delivery)
+              </h3>
+            </div>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-950 text-sky-300 border border-sky-800">
+              Bot Active
+            </span>
+          </div>
+
+          <p className="text-xs text-neutral-400 font-sans">
+            إرسال إشارات وتوصيات الصفقات اللحظية ذات التقييم المرتفع إلى حسابك أو قناتك على تيليجرام مع صورة الشارت الفني (الشموع اليابانية ومستويات الدخول والوقف والأهداف).
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label className="flex items-start gap-2.5 p-3 bg-neutral-900/60 border border-neutral-800 rounded-lg cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.enableTelegram}
+                onChange={e => setFormData({ ...formData, enableTelegram: e.target.checked })}
+                className="accent-sky-500 w-4 h-4 mt-0.5 cursor-pointer"
+              />
+              <div>
+                <span className="font-bold text-white block text-xs">تفعيل إرسال التنبيهات على تيليجرام</span>
+                <span className="text-[10px] text-neutral-400 font-sans">
+                  إرسال فوري للتوصيات المؤكدة (LONG/SHORT) المتوافقة مع الحد الأدنى للتقييم.
+                </span>
+              </div>
+            </label>
+
+            <label className="flex items-start gap-2.5 p-3 bg-neutral-900/60 border border-neutral-800 rounded-lg cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.enableTelegramChart !== false}
+                onChange={e => setFormData({ ...formData, enableTelegramChart: e.target.checked })}
+                className="accent-emerald-500 w-4 h-4 mt-0.5 cursor-pointer"
+              />
+              <div>
+                <span className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
+                  <LineChart className="w-3.5 h-3.5" />
+                  إرسال صورة شارت العملة في التوصية (Candlestick Chart)
+                </span>
+                <span className="text-[10px] text-neutral-400 font-sans">
+                  توليد وإرفاق شارت شموع 15M فوري يتضمن خطوط EMA 9/21، منطقة الدخول، TP1، TP2، ووقف الخسارة.
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+            <div>
+              <label className="block text-neutral-400 mb-1 text-[11px]">
+                Telegram Bot Token:
+              </label>
+              <input
+                type="password"
+                value={formData.telegramBotToken || ''}
+                onChange={e => setFormData({ ...formData, telegramBotToken: e.target.value })}
+                placeholder="7977896155:AA..."
+                className="w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-white font-mono focus:outline-none focus:border-sky-500 text-xs"
+              />
+            </div>
+
+            <div>
+              <label className="block text-neutral-400 mb-1 text-[11px]">
+                Telegram Chat ID:
+              </label>
+              <input
+                type="text"
+                value={formData.telegramChatId || ''}
+                onChange={e => setFormData({ ...formData, telegramChatId: e.target.value })}
+                placeholder="1076270331"
+                className="w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-white font-mono focus:outline-none focus:border-sky-500 text-xs"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => handleTestTelegram(true)}
+              disabled={isTestingTelegram}
+              className="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-mono font-bold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>{isTestingTelegram ? 'جاري إرسال التجربة والشارت...' : 'إرسال توصية تجريبية مع الشارت الفني 📊'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleTestTelegram(false)}
+              disabled={isTestingTelegram}
+              className="px-3 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-300 rounded-lg text-xs font-mono transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              <span>تجربة نص فقط 💬</span>
+            </button>
+
+            <a
+              href="/api/chart/preview?symbol=BTCUSDT"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-sky-400 rounded-lg text-xs font-mono transition-colors"
+            >
+              معاينة صورة الشارت في المتصفح ↗
+            </a>
+          </div>
+
+          {telegramTestStatus && (
+            <div
+              className={`p-3 rounded-lg text-xs font-mono border ${
+                telegramTestStatus.success
+                  ? 'bg-emerald-950/60 border-emerald-800 text-emerald-300'
+                  : 'bg-rose-950/60 border-rose-800 text-rose-300'
+              }`}
+            >
+              {telegramTestStatus.message}
+            </div>
+          )}
         </div>
 
         {/* Save Bar */}

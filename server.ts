@@ -16,8 +16,10 @@ import {
   startBackgroundScanner,
 } from './server/engine/scanner.ts';
 import {
+  handleIncomingTelegramMessage,
   handleTelegramCommand,
   sendTelegramMessage,
+  startTelegramPolling,
 } from './server/engine/telegram.ts';
 import {
   computePerformanceStats,
@@ -297,8 +299,18 @@ async function startServer() {
     }
   });
 
-  app.post('/api/telegram/webhook', (req, res) => {
+  app.post('/api/telegram/webhook', async (req, res) => {
     try {
+      const body = req.body;
+      if (body && body.message) {
+        const chatId = String(body.message.chat?.id);
+        const text = body.message.text || '/start';
+        const userName = body.message.from?.first_name || 'صديقي المتداول';
+        await handleIncomingTelegramMessage(chatId, text, userName);
+        return res.json({ ok: true });
+      }
+
+      // Fallback for internal simulator
       const { command = '/start' } = req.body;
       const setups = getCurrentSetups();
       const settings = getSettings();
@@ -329,6 +341,8 @@ async function startServer() {
     console.log(`SOSSKA Crypto Screener V2 Server running on http://${HOST}:${PORT}`);
     // Start background scanner
     startBackgroundScanner();
+    // Start background Telegram polling for real-time user commands & friend subscriptions
+    startTelegramPolling();
   });
 }
 

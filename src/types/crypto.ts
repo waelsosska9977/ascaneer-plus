@@ -253,6 +253,7 @@ export interface ScreenerSettings {
   enableTelegram: boolean;
   telegramBotToken: string;
   telegramChatId: string;
+  telegramSubscribers?: string[];
   enableLong: boolean;
   enableShort: boolean;
   enableWhaleFlow: boolean;
